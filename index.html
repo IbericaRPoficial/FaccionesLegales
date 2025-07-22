@@ -5,9 +5,9 @@
   <title>PDA Facciones Ilegales</title>
   <style>
     body {
-      background-color: black;
-      color: white;
-      font-family: monospace;
+      background-color: #0d0d0d;
+      color: #00ff99;
+      font-family: 'Courier New', Courier, monospace;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -17,8 +17,13 @@
 
     .pda-container {
       position: relative;
-      width: 600px;
-      height: 600px;
+      width: 700px;
+      height: 700px;
+      background: #1a1a1a;
+      border: 2px solid #00ff99;
+      box-shadow: 0 0 30px #00ff99;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .center-img {
@@ -26,34 +31,33 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #66ff66;
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
     }
 
     .link-img {
       position: absolute;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 2px solid #444;
-      transition: transform 0.3s, border-color 0.3s;
+      width: 100px;
+      height: 100px;
+      object-fit: contain;
+      cursor: pointer;
+      transition: transform 0.2s ease, filter 0.2s ease;
     }
 
     .link-img:hover {
       transform: scale(1.1);
-      border-color: #66ff66;
+      filter: brightness(1.3);
     }
 
-    /* Posiciones circulares */
+    /* Posiciones de los íconos */
     .img1 { top: 0; left: 50%; transform: translateX(-50%); }
-    .img2 { top: 15%; left: 85%; transform: translate(-50%, -50%); }
+    .img2 { top: 10%; left: 85%; transform: translate(-50%, -50%); }
     .img3 { top: 50%; left: 100%; transform: translate(-100%, -50%); }
-    .img4 { bottom: 15%; left: 85%; transform: translate(-50%, 50%); }
+    .img4 { bottom: 10%; left: 85%; transform: translate(-50%, 50%); }
     .img5 { bottom: 0; left: 50%; transform: translateX(-50%); }
-    .img6 { bottom: 15%; left: 15%; transform: translate(-50%, 50%); }
-    .img7 { top: 15%; left: 15%; transform: translate(-50%, -50%); }
+    .img6 { bottom: 10%; left: 15%; transform: translate(-50%, 50%); }
+    .img7 { top: 10%; left: 15%; transform: translate(-50%, -50%); }
   </style>
 </head>
 <body>
