@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <title>PDA Policial con Secciones y HTML Externo</title>
 <style>
-  /* (mismo CSS que antes) */
   body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -319,7 +318,6 @@
     }
 
     if (id === 'oficializador') {
-      // Mapear facción a archivo HTML oficializador
       const archivosOficializador = {
         PMM: 'oficializadorpmm.html',
         CNP: 'oficializadorcnp.html',
@@ -338,60 +336,76 @@
       return;
     }
 
-    // Otros casos
-    contenido.innerHTML = `<h2>${secciones.find(s => s.id === id).nombre}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
-  }
-
-  // Modal base de datos y registros
-  function abrirRegistroModal() {
-    document.getElementById('registroModal').style.display = 'flex';
-    document.getElementById('tituloFaccion').textContent = `Base de Datos de ${faccionActual}`;
-    cargarRegistrosModal();
-  }
-
-  function cerrarRegistroModal() {
-    document.getElementById('registroModal').style.display = 'none';
-    document.getElementById('registroNombre').value = '';
-    document.getElementById('registroDescripcion').value = '';
-    document.getElementById('registroPDF').value = '';
-    document.getElementById('listaRegistrosModal').innerHTML = '';
-  }
-
-  // Guardar registro con posible PDF
-  async function guardarRegistro() {
-    const nombre = document.getElementById('registroNombre').value.trim();
-    const descripcion = document.getElementById('registroDescripcion').value.trim();
-    const archivoPDF = document.getElementById('registroPDF').files[0];
-
-    if (!nombre || !descripcion) {
-      alert('Rellena nombre y descripción');
+    if (id === 'informes') {
+      const archivosInformes = {
+        PMM: 'informespmm.html',
+        CNP: 'informescnp.html',
+        GC: 'informesgc.html',
+        UCO: 'informesuco.html',
+        CNI: 'informescni.html',
+        BOM: 'informesbom.html',
+        SAMUR: 'informessamur.html'
+      };
+      let archivo = archivosInformes[faccionActual];
+      if (!archivo) {
+        contenido.innerHTML = `<p>Archivo de informes no disponible para la facción ${faccionActual}.</p>`;
+        return;
+      }
+      contenido.innerHTML = `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`;
       return;
     }
 
-    let urlPDF = null;
-    if (archivoPDF) {
-      if (archivoPDF.type !== 'application/pdf') {
-        alert('Solo archivos PDF permitidos');
-        return;
-      }
-      const storageRef = sRef(storage, `pdfs/${faccionActual}/${Date.now()}_${archivoPDF.name}`);
+    // Para otras secciones que no tengan iframe aún, solo texto básico:
+    contenido.innerHTML = `<h2>${secciones.find(s => s.id === id)?.nombre || id}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
+  }
+
+  // Abrir modal de agregar registro
+  function abrirRegistroModal() {
+    document.getElementById('registroNombre').value = '';
+    document.getElementById('registroDescripcion').value = '';
+    document.getElementById('registroPDF').value = '';
+    document.getElementById('tituloFaccion').textContent = `Base de datos de ${faccionActual}`;
+    document.getElementById('registroModal').style.display = 'flex';
+    cargarRegistrosModal();
+  }
+  // Cerrar modal de registros
+  function cerrarRegistroModal() {
+    document.getElementById('registroModal').style.display = 'none';
+  }
+
+  // Guardar registro nuevo en Firebase (con PDF opcional)
+  async function guardarRegistro() {
+    const nombre = document.getElementById('registroNombre').value.trim();
+    const descripcion = document.getElementById('registroDescripcion').value.trim();
+    const archivoPdf = document.getElementById('registroPDF').files[0];
+
+    if (!nombre || !descripcion) {
+      alert('Debes completar nombre y descripción');
+      return;
+    }
+
+    let urlPdf = null;
+    if (archivoPdf) {
       try {
-        await uploadBytes(storageRef, archivoPDF);
-        urlPDF = await getDownloadURL(storageRef);
-      } catch(e) {
-        alert('Error al subir PDF: ' + e.message);
+        const storageRef = sRef(storage, `${faccionActual}/pdfs/${Date.now()}_${archivoPdf.name}`);
+        await uploadBytes(storageRef, archivoPdf);
+        urlPdf = await getDownloadURL(storageRef);
+      } catch (error) {
+        alert('Error subiendo PDF: ' + error.message);
         return;
       }
     }
 
-    push(ref(db, `registros/${faccionActual}`), {
+    const registrosRef = ref(db, `registros/${faccionActual}`);
+    push(registrosRef, {
       nombre,
       descripcion,
-      pdf: urlPDF,
-      fecha: new Date().toISOString(),
-      usuario: usuarioActual
+      usuario: usuarioActual,
+      fecha: Date.now(),
+      pdf: urlPdf || null
     });
 
+    // Limpieza
     document.getElementById('registroNombre').value = '';
     document.getElementById('registroDescripcion').value = '';
     document.getElementById('registroPDF').value = '';
@@ -401,7 +415,7 @@
     alert('Registro guardado correctamente.');
   }
 
-  // Cargar registros para mostrar en la sección baseDatos
+  // Cargar registros en baseDatos (contenido principal)
   function cargarRegistros() {
     const listaDiv = document.getElementById('listaRegistros');
     if (!listaDiv) return;
@@ -427,7 +441,7 @@
     });
   }
 
-  // Cargar registros para modal (solo listado)
+  // Cargar registros en modal (listado)
   function cargarRegistrosModal() {
     const listaDiv = document.getElementById('listaRegistrosModal');
     if (!listaDiv) return;
@@ -453,7 +467,7 @@
     });
   }
 
-  // Eventos onload
+  // Al cargar página
   window.onload = () => {
     const guardado = localStorage.getItem('usuarioPDA');
     if (guardado) {
@@ -465,7 +479,7 @@
     }
   };
 
-  // Exportar funciones para usar en HTML
+  // Exponer funciones al global scope
   window.guardarUsuario = guardarUsuario;
   window.cambiarUsuario = cambiarUsuario;
   window.accederFaccion = accederFaccion;
@@ -475,5 +489,6 @@
   window.cerrarRegistroModal = cerrarRegistroModal;
   window.guardarRegistro = guardarRegistro;
 </script>
+
 </body>
 </html>
