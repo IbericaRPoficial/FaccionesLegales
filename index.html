@@ -1,1043 +1,522 @@
 <!DOCTYPE html>
-
 <html lang="es">
-
 <head>
-
 <meta charset="UTF-8" />
-
 <title>PDA Policial IbericaRP</title>
-
 <style>
-
-  body {
-
-    margin: 0;
-
-    font-family: 'Segoe UI', sans-serif;
-
-    background: url('central.png') no-repeat center center fixed;
-
-    background-size: cover;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    height: 100vh;
-
-    color: #ddd;
-
-  }
-
-  .pda {
-
-    background-color: #1b1b1b;
-
-    border: 2px solid #3a3a3a;
-
-    width: 1000px;
-
-    height: 650px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    box-shadow: inset 0 0 5px #000;
-
-  }
-
-  .top-bar {
-
-    background-color: #2d2d2d;
-
-    padding: 10px 20px;
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    font-size: 14px;
-
-    border-bottom: 1px solid #444;
-
-    color: #eee;
-
-  }
-
-  .main {
-
-    flex: 1;
-
-    display: flex;
-
-    overflow: hidden;
-
-  }
-
-  .sidebar {
-
-    width: 220px;
-
-    background-color: #252525;
-
-    border-right: 1px solid #444;
-
-    padding: 10px;
-
-    display: flex;
-
-    flex-direction: column;
-
-  }
-
-  .sidebar button {
-
-    background-color: #303030;
-
-    color: #ccc;
-
-    border: none;
-
-    padding: 12px;
-
-    margin-bottom: 10px;
-
-    text-align: left;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-    transition: background 0.2s;
-
-  }
-
-  .sidebar button:hover {
-
-    background-color: #3f3f3f;
-
-  }
-
-  .faccion-menu {
-
-    width: 200px;
-
-    background: #1a1a1a;
-
-    border-right: 1px solid #444;
-
-    padding: 10px;
-
-    display: flex;
-
-    flex-direction: column;
-
-  }
-
- .faccion-menu button {
-
-      background-color: #050000;
-
-      color: #bbb;
-
-      border: none;
-
-      padding: 10px;
-
-      margin-bottom: 8px;
-
-      cursor: pointer;
-
-      font-family: monospace;
-
-    }
-
-  .faccion-menu button:hover {
-
-      background-color: #444;
-
-      color: #fff;
-
-    }
-
-  .content {
-
-    flex: 1;
-
-    padding: 20px;
-
-    font-family: monospace;
-
-    overflow-y: auto;
-
-    color: #ddd;
-
-    height: 100%;
-
-  }
-
-  .input-modal {
-
-    position: fixed;
-
-    top: 0; left: 0;
-
-    width: 100%; height: 100%;
-
-    background: rgba(0, 0, 0, 0.85);
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    z-index: 100;
-
-  }
-
-  .input-box {
-
-    background: #2a2a2a;
-
-    padding: 20px;
-
-    border-radius: 8px;
-
-    color: #fff;
-
-    box-shadow: 0 0 10px #000;
-
-    width: 320px;
-
-  }
-
-  .input-box input, .input-box textarea {
-
-    width: 100%;
-
-    padding: 10px;
-
-    margin-top: 10px;
-
-    border: none;
-
-    background: #1a1a1a;
-
-    color: #fff;
-
-    font-family: monospace;
-
-  }
-
-  .input-box button {
-
-    margin-top: 10px;
-
-    padding: 12px;
-
-    width: 100%;
-
-    background-color: #007bff;
-
-    color: white;
-
-    border: none;
-
-    cursor: pointer;
-
-    font-weight: bold;
-
-  }
-
-  .registro {
-
-    background: #222;
-
-    padding: 12px;
-
-    margin-bottom: 10px;
-
-    border-radius: 5px;
-
-  }
-
-  .registro a {
-
-    color: #66ccff;
-
-    text-decoration: none;
-
-  }
-
-  .registro a:hover {
-
-    text-decoration: underline;
-
-  }
-
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('central.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #ddd;
+  }
+  .pda {
+    background-color: #1b1b1b;
+    border: 2px solid #3a3a3a;
+    width: 1000px;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 5px #000;
+  }
+  .top-bar {
+    background-color: #2d2d2d;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #444;
+    color: #eee;
+  }
+  .main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  .sidebar {
+    width: 220px;
+    background-color: #252525;
+    border-right: 1px solid #444;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar button {
+    background-color: #303030;
+    color: #ccc;
+    border: none;
+    padding: 12px;
+    margin-bottom: 10px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .sidebar button:hover {
+    background-color: #3f3f3f;
+  }
+  .faccion-menu {
+    width: 200px;
+    background: #1a1a1a;
+    border-right: 1px solid #444;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .faccion-menu button {
+    background-color: #2d2d2d;
+    color: #bbb;
+    border: none;
+    padding: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-family: monospace;
+  }
+  .faccion-menu button:hover {
+    background-color: #444;
+    color: #fff;
+  }
+  .content {
+    flex: 1;
+    padding: 20px;
+    font-family: monospace;
+    overflow-y: auto;
+    color: #ddd;
+    height: 100%;
+  }
+  .input-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  .input-box {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+    box-shadow: 0 0 10px #000;
+    width: 320px;
+  }
+  .input-box input, .input-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: monospace;
+  }
+  .input-box button {
+    margin-top: 10px;
+    padding: 12px;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .registro {
+    background: #222;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  .registro a {
+    color: #66ccff;
+    text-decoration: none;
+  }
+  .registro a:hover {
+    text-decoration: underline;
+  }
 </style>
-
 </head>
-
 <body>
 
-
-
 <div class="pda">
-
-  <div class="top-bar">
-
-    <div>Terminal Central Facciones Legales</div>
-
-    <div id="usuario">Placa: ---</div>
-
-  </div>
-
-  <div class="main">
-
-    <div class="sidebar" id="sidebar">
-
-      <button onclick="accederFaccion('PMM')">PMM</button>
-
-      <button onclick="accederFaccion('CNP')">CNP</button>
-
-      <button onclick="accederFaccion('GC')">Guardia Civil</button>
-
-      <button onclick="accederFaccion('UCO')">UCO</button>
-
-      <button onclick="accederFaccion('CNI')">CNI</button>
-
-      <button onclick="accederFaccion('BOM')">Bomberos</button>
-
-      <button onclick="accederFaccion('SAMUR')">SAMUR</button>
-
-      <button onclick="cambiarUsuario()">Cambiar Usuario</button>
-
-    </div>
-
-    <div id="faccionMenuContainer" style="display:none; flex-direction: column; background:#1a1a1a; border-right: 1px solid #444; padding:10px; width: 220px;">
-
-      <!-- Menú se inyecta aquí -->
-
-    </div>
-
-    <div class="content" id="contenido">
-
-      Selecciona una facción en el panel lateral para acceder a su información.
-
-    </div>
-
-  </div>
-
+  <div class="top-bar">
+    <div>Terminal Central Facciones Legales</div>
+    <div id="usuario">Placa: ---</div>
+  </div>
+  <div class="main">
+    <div class="sidebar" id="sidebar">
+      <button onclick="accederFaccion('PMM')">PMM</button>
+      <button onclick="accederFaccion('CNP')">CNP</button>
+      <button onclick="accederFaccion('GC')">Guardia Civil</button>
+      <button onclick="accederFaccion('UCO')">UCO</button>
+      <button onclick="accederFaccion('CNI')">CNI</button>
+      <button onclick="accederFaccion('BOM')">Bomberos</button>
+      <button onclick="accederFaccion('SAMUR')">SAMUR</button>
+      <button onclick="cambiarUsuario()">Cambiar Usuario</button>
+    </div>
+    <div id="faccionMenuContainer" style="display:none; flex-direction: column; background:#1a1a1a; border-right: 1px solid #444; padding:10px; width: 220px;">
+      <!-- Menú se inyecta aquí -->
+    </div>
+    <div class="content" id="contenido">
+      Selecciona una facción en el panel lateral para acceder a su información.
+    </div>
+  </div>
 </div>
-
-
 
 <!-- Modal para usuario -->
-
 <div class="input-modal" id="usuarioModal">
-
-  <div class="input-box">
-
-    <label>Introduce tu placa:</label>
-
-    <input type="text" id="nombreUsuario" />
-
-    <button onclick="guardarUsuario()">Entrar</button>
-
-  </div>
-
+  <div class="input-box">
+    <label>Introduce tu placa:</label>
+    <input type="text" id="nombreUsuario" />
+    <button onclick="guardarUsuario()">Entrar</button>
+  </div>
 </div>
-
-
 
 <!-- Modal para contraseña -->
-
 <div class="input-modal" id="passwordModal" style="display:none;">
-
-  <div class="input-box">
-
-    <label id="labelPassword">Introduce la contraseña:</label>
-
-    <input type="password" id="inputPassword" />
-
-    <button onclick="verificarPassword()">Acceder</button>
-
-  </div>
-
+  <div class="input-box">
+    <label id="labelPassword">Introduce la contraseña:</label>
+    <input type="password" id="inputPassword" />
+    <button onclick="verificarPassword()">Acceder</button>
+  </div>
 </div>
-
-
 
 <!-- Modal para base de datos -->
-
 <div class="input-modal" id="registroModal" style="display:none; overflow-y:auto; max-height:90vh;">
-
-  <div class="input-box" style="width: 600px; max-height: 90vh; overflow-y: auto;">
-
-    <h3 id="tituloFaccion">Base de datos</h3>
-
-    <label>Nombre del registro:</label>
-
-    <input type="text" id="registroNombre" />
-
-    <label>Descripción:</label>
-
-    <textarea id="registroDescripcion" rows="3"></textarea>
-
-    <label>Subir archivo PDF (opcional):</label>
-
-    <input type="file" id="registroPDF" accept="application/pdf" />
-
-    <button onclick="guardarRegistro()">Guardar registro</button>
-
-    <hr />
-
-    <h4>Registros existentes:</h4>
-
-    <div id="listaRegistrosModal" style="max-height: 300px; overflow-y: auto;"></div>
-
-    <button onclick="cerrarRegistroModal()">Cerrar</button>
-
-  </div>
-
+  <div class="input-box" style="width: 600px; max-height: 90vh; overflow-y: auto;">
+    <h3 id="tituloFaccion">Base de datos</h3>
+    <label>Nombre del registro:</label>
+    <input type="text" id="registroNombre" />
+    <label>Descripción:</label>
+    <textarea id="registroDescripcion" rows="3"></textarea>
+    <label>Subir archivo PDF (opcional):</label>
+    <input type="file" id="registroPDF" accept="application/pdf" />
+    <button onclick="guardarRegistro()">Guardar registro</button>
+    <hr />
+    <h4>Registros existentes:</h4>
+    <div id="listaRegistrosModal" style="max-height: 300px; overflow-y: auto;"></div>
+    <button onclick="cerrarRegistroModal()">Cerrar</button>
+  </div>
 </div>
 
-
-
 <script type="module">
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
-
-
-
-  // Config Firebase
-
-  const firebaseConfig = {
-
-    apiKey: "AIzaSyCG1rHDV6sXnuNmuKujgT1jWoryELevCO8",
-
-    authDomain: "ibericafaccionlegal.firebaseapp.com",
-
-    databaseURL: "https://ibericafaccionlegal-default-rtdb.europe-west1.firebasedatabase.app",
-
-    projectId: "ibericafaccionlegal",
-
-    storageBucket: "ibericafaccionlegal.firebasestorage.app",
-
-    messagingSenderId: "253236699510",
-
-    appId: "1:253236699510:web:09e85caf44a98df0e09a57",
-
-    measurementId: "G-Y8WRVFJQ0G"
-
-  };
-
-
-
-  const app = initializeApp(firebaseConfig);
-
-  const db = getDatabase(app);
-
-  const storage = getStorage(app);
-
-
-
-  // Contraseñas con permisos (secciones permitidas) por facción
-
-  const contraseñas = {
-
-    PMM: {
-
-      'pmm123': ['baseDatos', 'informes'],
-
-      'pmmAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    CNP: {
-
-      'cnp456': ['baseDatos', 'informes'],
-
-      'cnpAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    GC: {
-
-      'gc789': ['baseDatos', 'informes'],
-
-      'gcAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    UCO: {
-
-      'uco321': ['baseDatos', 'informes'],
-
-      'ucoAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    CNI: {
-
-      'cni999': ['baseDatos', 'informes'],
-
-      'cniAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    BOM: {
-
-      'bom111': ['baseDatos', 'informes'],
-
-      'bomAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    },
-
-    SAMUR: {
-
-      'samur555': ['baseDatos', 'informes'],
-
-      'samurAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
-
-    }
-
-  };
-
-
-
-  const secciones = [
-
-    { id: 'baseDatos', nombre: 'Base de Datos' },
-
-    { id: 'oficializador', nombre: 'Oficializador' },
-
-    { id: 'informes', nombre: 'Informes' },
-
-    { id: 'oposicionesCuestionario', nombre: 'Oposiciones Cuestionario' },
-
-    { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' }
-
-  ];
-
-
-
-  let usuarioActual = null;
-
-  let faccionActual = null;
-
-  let seccionActual = null;
-
-  let seccionesPermitidas = [];
-
-
-
-  // Usuario
-
-  function guardarUsuario() {
-
-    const nombre = document.getElementById('nombreUsuario').value.trim();
-
-    if (nombre) {
-
-      usuarioActual = nombre;
-
-      localStorage.setItem('usuarioPDA', nombre);
-
-      document.getElementById('usuario').textContent = 'Placa: ' + nombre;
-
-      document.getElementById('usuarioModal').style.display = 'none';
-
-    }
-
-  }
-
-
-
-  function cambiarUsuario() {
-
-    document.getElementById('usuarioModal').style.display = 'flex';
-
-  }
-
-
-
-  // Contraseña y acceso facción
-
-  function accederFaccion(faccion) {
-
-    faccionActual = faccion;
-
-    seccionActual = null;
-
-    seccionesPermitidas = [];
-
-    document.getElementById('inputPassword').value = '';
-
-    document.getElementById('labelPassword').textContent = `Introduce la contraseña para ${faccion}`;
-
-    document.getElementById('passwordModal').style.display = 'flex';
-
-  }
-
-
-
-  function verificarPassword() {
-
-    const clave = document.getElementById('inputPassword').value;
-
-    const fac = faccionActual;
-
-    if (contraseñas[fac] && contraseñas[fac][clave]) {
-
-      seccionesPermitidas = contraseñas[fac][clave]; // guardamos secciones que puede ver el usuario
-
-      document.getElementById('passwordModal').style.display = 'none';
-
-      mostrarMenuFaccion();
-
-    } else {
-
-      alert('Contraseña incorrecta. Acceso denegado.');
-
-    }
-
-  }
-
-
-
-  // Mostrar menú lateral de secciones
-
-  function mostrarMenuFaccion() {
-
-    const menuContainer = document.getElementById('faccionMenuContainer');
-
-    menuContainer.style.display = 'flex';
-
-    menuContainer.innerHTML = '';
-
-
-
-    // Filtramos secciones que puede ver el usuario
-
-    secciones
-
-      .filter(sec => seccionesPermitidas.includes(sec.id))
-
-      .forEach(sec => {
-
-        const btn = document.createElement('button');
-
-        btn.textContent = sec.nombre;
-
-        btn.onclick = () => cargarSeccion(sec.id);
-
-        menuContainer.appendChild(btn);
-
-      });
-
-
-
-    document.getElementById('contenido').textContent = `Accedido a facción ${faccionActual}. Selecciona una sección.`;
-
-  }
-
-
-
-  // Cargar sección seleccionada
-
-  function cargarSeccion(id) {
-
-    seccionActual = id;
-
-    const contenido = document.getElementById('contenido');
-
-
-
-    if (id === 'baseDatos') {
-
-      contenido.innerHTML = `
-
-        <h2>Base de Datos de ${faccionActual}</h2>
-
-        <button id="btnAgregarRegistro" style="margin-bottom: 15px; padding: 10px; background:#007bff; border:none; color:#fff; cursor:pointer;">
-
-          Añadir registro
-
-        </button>
-
-        <div id="listaRegistros" style="max-height: 450px; overflow-y: auto; background:#222; padding:10px; border-radius:6px;"></div>
-
-      `;
-
-      document.getElementById('btnAgregarRegistro').onclick = abrirRegistroModal;
-
-      cargarRegistros();
-
-      return;
-
-    }
-
-
-
-    if (id === 'oficializador') {
-
-      const archivosOficializador = {
-
-        PMM: 'oficializadorpmm.html',
-
-        CNP: 'oficializadorcnp.html',
-
-        GC: 'officializadorgc.html',
-
-        UCO: 'oficializadoruco.html',
-
-        CNI: 'oficializadorcni.html',
-
-        BOM: 'oficializadorbom.html',
-
-        SAMUR: 'oficializadorsamur.html'
-
-      };
-
-      let archivo = archivosOficializador[faccionActual];
-
-      if (!archivo) {
-
-        contenido.innerHTML = `<p>Archivo oficializador no disponible para la facción ${faccionActual}.</p>`;
-
-        return;
-
-      }
-
-      contenido.innerHTML = `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`;
-
-      return;
-
-    }
-
-
-
-    if (id === 'informes') {
-
-      const archivosInformes = {
-
-        PMM: 'informespmm.html',
-
-        CNP: 'informescnp.html',
-
-        GC: 'informesgc.html',
-
-        UCO: 'informesuco.html',
-
-        CNI: 'informescni.html',
-
-        BOM: 'informesbom.html',
-
-        SAMUR: 'informessamur.html'
-
-      };
-
-      let archivo = archivosInformes[faccionActual];
-
-      if (!archivo) {
-
-        contenido.innerHTML = `<p>Archivo de informes no disponible para la facción ${faccionActual}.</p>`;
-
-        return;
-
-      }
-
-      contenido.innerHTML = `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`;
-
-      return;
-
-    }
-
-
-
-    // Para otras secciones que no tengan iframe aún, solo texto básico:
-
-    contenido.innerHTML = `<h2>${secciones.find(s => s.id === id)?.nombre || id}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
-
-  }
-
-
-
-  // Abrir modal de agregar registro
-
-  function abrirRegistroModal() {
-
-    document.getElementById('registroNombre').value = '';
-
-    document.getElementById('registroDescripcion').value = '';
-
-    document.getElementById('registroPDF').value = '';
-
-    document.getElementById('tituloFaccion').textContent = `Base de datos de ${faccionActual}`;
-
-    document.getElementById('registroModal').style.display = 'flex';
-
-    cargarRegistrosModal();
-
-  }
-
-  // Cerrar modal de registros
-
-  function cerrarRegistroModal() {
-
-    document.getElementById('registroModal').style.display = 'none';
-
-  }
-
-
-
-  // Guardar registro nuevo en Firebase (con PDF opcional)
-
-  async function guardarRegistro() {
-
-    const nombre = document.getElementById('registroNombre').value.trim();
-
-    const descripcion = document.getElementById('registroDescripcion').value.trim();
-
-    const archivoPdf = document.getElementById('registroPDF').files[0];
-
-
-
-    if (!nombre || !descripcion) {
-
-      alert('Debes completar nombre y descripción');
-
-      return;
-
-    }
-
-
-
-    let urlPdf = null;
-
-    if (archivoPdf) {
-
-      try {
-
-        const storageRef = sRef(storage, `${faccionActual}/pdfs/${Date.now()}_${archivoPdf.name}`);
-
-        await uploadBytes(storageRef, archivoPdf);
-
-        urlPdf = await getDownloadURL(storageRef);
-
-      } catch (error) {
-
-        alert('Error subiendo PDF: ' + error.message);
-
-        return;
-
-      }
-
-    }
-
-
-
-    const registrosRef = ref(db, `registros/${faccionActual}`);
-
-    push(registrosRef, {
-
-      nombre,
-
-      descripcion,
-
-      usuario: usuarioActual,
-
-      fecha: Date.now(),
-
-      pdf: urlPdf || null
-
-    });
-
-
-
-    // Limpieza
-
-    document.getElementById('registroNombre').value = '';
-
-    document.getElementById('registroDescripcion').value = '';
-
-    document.getElementById('registroPDF').value = '';
-
-
-
-    cargarRegistros();
-
-    cargarRegistrosModal();
-
-    alert('Registro guardado correctamente.');
-
-  }
-
-
-
-  // Cargar registros en baseDatos (contenido principal)
-
-  function cargarRegistros() {
-
-    const listaDiv = document.getElementById('listaRegistros');
-
-    if (!listaDiv) return;
-
-
-
-    const registrosRef = ref(db, `registros/${faccionActual}`);
-
-    onValue(registrosRef, (snapshot) => {
-
-      const datos = snapshot.val();
-
-      if (!datos) {
-
-        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
-
-        return;
-
-      }
-
-      listaDiv.innerHTML = '';
-
-      Object.values(datos).forEach(reg => {
-
-        const div = document.createElement('div');
-
-        div.className = 'registro';
-
-        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
-
-        if (reg.pdf) {
-
-          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
-
-        }
-
-        div.innerHTML = html;
-
-        listaDiv.appendChild(div);
-
-      });
-
-    });
-
-  }
-
-
-
-  // Cargar registros en modal (listado)
-
-  function cargarRegistrosModal() {
-
-    const listaDiv = document.getElementById('listaRegistrosModal');
-
-    if (!listaDiv) return;
-
-
-
-    const registrosRef = ref(db, `registros/${faccionActual}`);
-
-    onValue(registrosRef, (snapshot) => {
-
-      const datos = snapshot.val();
-
-      if (!datos) {
-
-        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
-
-        return;
-
-      }
-
-      listaDiv.innerHTML = '';
-
-      Object.values(datos).forEach(reg => {
-
-        const div = document.createElement('div');
-
-        div.className = 'registro';
-
-        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
-
-        if (reg.pdf) {
-
-          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
-
-        }
-
-        div.innerHTML = html;
-
-        listaDiv.appendChild(div);
-
-      });
-
-    });
-
-  }
-
-
-
-  // Al cargar página
-
-  window.onload = () => {
-
-    const guardado = localStorage.getItem('usuarioPDA');
-
-    if (guardado) {
-
-      usuarioActual = guardado;
-
-      document.getElementById('usuario').textContent = 'Placa: ' + guardado;
-
-      document.getElementById('usuarioModal').style.display = 'none';
-
-    } else {
-
-      document.getElementById('usuarioModal').style.display = 'flex';
-
-    }
-
-  };
-
-
-
-  // Exponer funciones al global scope
-
-  window.guardarUsuario = guardarUsuario;
-
-  window.cambiarUsuario = cambiarUsuario;
-
-  window.accederFaccion = accederFaccion;
-
-  window.verificarPassword = verificarPassword;
-
-  window.cargarSeccion = cargarSeccion;
-
-  window.abrirRegistroModal = abrirRegistroModal;
-
-  window.cerrarRegistroModal = cerrarRegistroModal;
-
-  window.guardarRegistro = guardarRegistro;
-
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
+
+  // Config Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCG1rHDV6sXnuNmuKujgT1jWoryELevCO8",
+    authDomain: "ibericafaccionlegal.firebaseapp.com",
+    databaseURL: "https://ibericafaccionlegal-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ibericafaccionlegal",
+    storageBucket: "ibericafaccionlegal.firebasestorage.app",
+    messagingSenderId: "253236699510",
+    appId: "1:253236699510:web:09e85caf44a98df0e09a57",
+    measurementId: "G-Y8WRVFJQ0G"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const storage = getStorage(app);
+
+  // Contraseñas con permisos (secciones permitidas) por facción
+  const contraseñas = {
+    PMM: {
+      'pmm123': ['baseDatos', 'informes'],
+      'pmmAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    CNP: {
+      'cnp456': ['baseDatos', 'informes'],
+      'cnpAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    GC: {
+      'gc789': ['baseDatos', 'informes'],
+      'gcAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    UCO: {
+      'uco321': ['baseDatos', 'informes'],
+      'ucoAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    CNI: {
+      'cni999': ['baseDatos', 'informes'],
+      'cniAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    BOM: {
+      'bom111': ['baseDatos', 'informes'],
+      'bomAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    SAMUR: {
+      'samur555': ['baseDatos', 'informes'],
+      'samurAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    }
+  };
+
+  const secciones = [
+    { id: 'baseDatos', nombre: 'Base de Datos' },
+    { id: 'oficializador', nombre: 'Oficializador' },
+    { id: 'informes', nombre: 'Informes' },
+    { id: 'oposicionesCuestionario', nombre: 'Oposiciones Cuestionario' },
+    { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' }
+  ];
+
+  let usuarioActual = null;
+  let faccionActual = null;
+  let seccionActual = null;
+  let seccionesPermitidas = [];
+
+  // Usuario
+  function guardarUsuario() {
+    const nombre = document.getElementById('nombreUsuario').value.trim();
+    if (nombre) {
+      usuarioActual = nombre;
+      localStorage.setItem('usuarioPDA', nombre);
+      document.getElementById('usuario').textContent = 'Placa: ' + nombre;
+      document.getElementById('usuarioModal').style.display = 'none';
+    }
+  }
+
+  function cambiarUsuario() {
+    document.getElementById('usuarioModal').style.display = 'flex';
+  }
+
+  // Contraseña y acceso facción
+  function accederFaccion(faccion) {
+    faccionActual = faccion;
+    seccionActual = null;
+    seccionesPermitidas = [];
+    document.getElementById('inputPassword').value = '';
+    document.getElementById('labelPassword').textContent = Introduce la contraseña para ${faccion};
+    document.getElementById('passwordModal').style.display = 'flex';
+  }
+
+  function verificarPassword() {
+    const clave = document.getElementById('inputPassword').value;
+    const fac = faccionActual;
+    if (contraseñas[fac] && contraseñas[fac][clave]) {
+      seccionesPermitidas = contraseñas[fac][clave]; // guardamos secciones que puede ver el usuario
+      document.getElementById('passwordModal').style.display = 'none';
+      mostrarMenuFaccion();
+    } else {
+      alert('Contraseña incorrecta. Acceso denegado.');
+    }
+  }
+
+  // Mostrar menú lateral de secciones
+  function mostrarMenuFaccion() {
+    const menuContainer = document.getElementById('faccionMenuContainer');
+    menuContainer.style.display = 'flex';
+    menuContainer.innerHTML = '';
+
+    // Filtramos secciones que puede ver el usuario
+    secciones
+      .filter(sec => seccionesPermitidas.includes(sec.id))
+      .forEach(sec => {
+        const btn = document.createElement('button');
+        btn.textContent = sec.nombre;
+        btn.onclick = () => cargarSeccion(sec.id);
+        menuContainer.appendChild(btn);
+      });
+
+    document.getElementById('contenido').textContent = Accedido a facción ${faccionActual}. Selecciona una sección.;
+  }
+
+  // Cargar sección seleccionada
+  function cargarSeccion(id) {
+    seccionActual = id;
+    const contenido = document.getElementById('contenido');
+
+    if (id === 'baseDatos') {
+      contenido.innerHTML = 
+        <h2>Base de Datos de ${faccionActual}</h2>
+        <button id="btnAgregarRegistro" style="margin-bottom: 15px; padding: 10px; background:#007bff; border:none; color:#fff; cursor:pointer;">
+          Añadir registro
+        </button>
+        <div id="listaRegistros" style="max-height: 450px; overflow-y: auto; background:#222; padding:10px; border-radius:6px;"></div>
+      ;
+      document.getElementById('btnAgregarRegistro').onclick = abrirRegistroModal;
+      cargarRegistros();
+      return;
+    }
+
+    if (id === 'oficializador') {
+      const archivosOficializador = {
+        PMM: 'oficializadorpmm.html',
+        CNP: 'oficializadorcnp.html',
+        GC: 'officializadorgc.html',
+        UCO: 'oficializadoruco.html',
+        CNI: 'oficializadorcni.html',
+        BOM: 'oficializadorbom.html',
+        SAMUR: 'oficializadorsamur.html'
+      };
+      let archivo = archivosOficializador[faccionActual];
+      if (!archivo) {
+        contenido.innerHTML = <p>Archivo oficializador no disponible para la facción ${faccionActual}.</p>;
+        return;
+      }
+      contenido.innerHTML = <iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>;
+      return;
+    }
+
+    if (id === 'informes') {
+      const archivosInformes = {
+        PMM: 'informespmm.html',
+        CNP: 'informescnp.html',
+        GC: 'informesgc.html',
+        UCO: 'informesuco.html',
+        CNI: 'informescni.html',
+        BOM: 'informesbom.html',
+        SAMUR: 'informessamur.html'
+      };
+      let archivo = archivosInformes[faccionActual];
+      if (!archivo) {
+        contenido.innerHTML = <p>Archivo de informes no disponible para la facción ${faccionActual}.</p>;
+        return;
+      }
+      contenido.innerHTML = <iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>;
+      return;
+    }
+
+    // Para otras secciones que no tengan iframe aún, solo texto básico:
+    contenido.innerHTML = <h2>${secciones.find(s => s.id === id)?.nombre || id}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>;
+  }
+
+  // Abrir modal de agregar registro
+  function abrirRegistroModal() {
+    document.getElementById('registroNombre').value = '';
+    document.getElementById('registroDescripcion').value = '';
+    document.getElementById('registroPDF').value = '';
+    document.getElementById('tituloFaccion').textContent = Base de datos de ${faccionActual};
+    document.getElementById('registroModal').style.display = 'flex';
+    cargarRegistrosModal();
+  }
+  // Cerrar modal de registros
+  function cerrarRegistroModal() {
+    document.getElementById('registroModal').style.display = 'none';
+  }
+
+  // Guardar registro nuevo en Firebase (con PDF opcional)
+  async function guardarRegistro() {
+    const nombre = document.getElementById('registroNombre').value.trim();
+    const descripcion = document.getElementById('registroDescripcion').value.trim();
+    const archivoPdf = document.getElementById('registroPDF').files[0];
+
+    if (!nombre || !descripcion) {
+      alert('Debes completar nombre y descripción');
+      return;
+    }
+
+    let urlPdf = null;
+    if (archivoPdf) {
+      try {
+        const storageRef = sRef(storage, ${faccionActual}/pdfs/${Date.now()}_${archivoPdf.name});
+        await uploadBytes(storageRef, archivoPdf);
+        urlPdf = await getDownloadURL(storageRef);
+      } catch (error) {
+        alert('Error subiendo PDF: ' + error.message);
+        return;
+      }
+    }
+
+    const registrosRef = ref(db, registros/${faccionActual});
+    push(registrosRef, {
+      nombre,
+      descripcion,
+      usuario: usuarioActual,
+      fecha: Date.now(),
+      pdf: urlPdf || null
+    });
+
+    // Limpieza
+    document.getElementById('registroNombre').value = '';
+    document.getElementById('registroDescripcion').value = '';
+    document.getElementById('registroPDF').value = '';
+
+    cargarRegistros();
+    cargarRegistrosModal();
+    alert('Registro guardado correctamente.');
+  }
+
+  // Cargar registros en baseDatos (contenido principal)
+  function cargarRegistros() {
+    const listaDiv = document.getElementById('listaRegistros');
+    if (!listaDiv) return;
+
+    const registrosRef = ref(db, registros/${faccionActual});
+    onValue(registrosRef, (snapshot) => {
+      const datos = snapshot.val();
+      if (!datos) {
+        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
+        return;
+      }
+      listaDiv.innerHTML = '';
+      Object.values(datos).forEach(reg => {
+        const div = document.createElement('div');
+        div.className = 'registro';
+        let html = <strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>;
+        if (reg.pdf) {
+          html += <br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>;
+        }
+        div.innerHTML = html;
+        listaDiv.appendChild(div);
+      });
+    });
+  }
+
+  // Cargar registros en modal (listado)
+  function cargarRegistrosModal() {
+    const listaDiv = document.getElementById('listaRegistrosModal');
+    if (!listaDiv) return;
+
+    const registrosRef = ref(db, registros/${faccionActual});
+    onValue(registrosRef, (snapshot) => {
+      const datos = snapshot.val();
+      if (!datos) {
+        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
+        return;
+      }
+      listaDiv.innerHTML = '';
+      Object.values(datos).forEach(reg => {
+        const div = document.createElement('div');
+        div.className = 'registro';
+        let html = <strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>;
+        if (reg.pdf) {
+          html += <br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>;
+        }
+        div.innerHTML = html;
+        listaDiv.appendChild(div);
+      });
+    });
+  }
+
+  // Al cargar página
+  window.onload = () => {
+    const guardado = localStorage.getItem('usuarioPDA');
+    if (guardado) {
+      usuarioActual = guardado;
+      document.getElementById('usuario').textContent = 'Placa: ' + guardado;
+      document.getElementById('usuarioModal').style.display = 'none';
+    } else {
+      document.getElementById('usuarioModal').style.display = 'flex';
+    }
+  };
+
+  // Exponer funciones al global scope
+  window.guardarUsuario = guardarUsuario;
+  window.cambiarUsuario = cambiarUsuario;
+  window.accederFaccion = accederFaccion;
+  window.verificarPassword = verificarPassword;
+  window.cargarSeccion = cargarSeccion;
+  window.abrirRegistroModal = abrirRegistroModal;
+  window.cerrarRegistroModal = cerrarRegistroModal;
+  window.guardarRegistro = guardarRegistro;
 </script>
 
-
-
 </body>
-
 </html>
