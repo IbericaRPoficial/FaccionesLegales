@@ -1,76 +1,78 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>PDA Facciones Ilegales</title>
+  <meta charset="UTF-8" />
+  <title>PDA Ilegal</title>
   <style>
     body {
-      background-color: #0d0d0d;
+      margin: 0;
+      background: radial-gradient(circle at center, #000000 60%, #0a0a0a 100%);
+      font-family: 'Courier New', monospace;
       color: #00ff99;
-      font-family: 'Courier New', Courier, monospace;
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
-      margin: 0;
     }
 
-    .pda-container {
+    .pda {
       position: relative;
       width: 700px;
       height: 700px;
-      background: #1a1a1a;
-      border: 2px solid #00ff99;
-      box-shadow: 0 0 30px #00ff99;
+      background: #111;
+      border: 3px solid #00ff99;
+      box-shadow: 0 0 25px #00ff99;
       padding: 20px;
       box-sizing: border-box;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    .center-img {
+    .central {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
-      object-fit: contain;
+      width: 160px;
+      height: 160px;
+      z-index: 2;
     }
 
-    .link-img {
+    .icon {
       position: absolute;
       width: 100px;
       height: 100px;
-      object-fit: contain;
-      cursor: pointer;
-      transition: transform 0.2s ease, filter 0.2s ease;
+      transition: transform 0.3s, filter 0.3s;
+      filter: brightness(0.8);
+      z-index: 1;
     }
 
-    .link-img:hover {
+    .icon:hover {
       transform: scale(1.1);
-      filter: brightness(1.3);
+      filter: brightness(1.5) drop-shadow(0 0 5px #00ff99);
     }
 
-    /* Posiciones de los íconos */
-    .img1 { top: 0; left: 50%; transform: translateX(-50%); }
-    .img2 { top: 10%; left: 85%; transform: translate(-50%, -50%); }
-    .img3 { top: 50%; left: 100%; transform: translate(-100%, -50%); }
-    .img4 { bottom: 10%; left: 85%; transform: translate(-50%, 50%); }
-    .img5 { bottom: 0; left: 50%; transform: translateX(-50%); }
-    .img6 { bottom: 10%; left: 15%; transform: translate(-50%, 50%); }
-    .img7 { top: 10%; left: 15%; transform: translate(-50%, -50%); }
+    /* Posiciones orbitando al centro */
+    .pos1 { top: 10px; left: 50%; transform: translateX(-50%); }
+    .pos2 { top: 100px; right: 20px; }
+    .pos3 { top: 50%; right: 0; transform: translateY(-50%); }
+    .pos4 { bottom: 100px; right: 20px; }
+    .pos5 { bottom: 10px; left: 50%; transform: translateX(-50%); }
+    .pos6 { bottom: 100px; left: 20px; }
+    .pos7 { top: 100px; left: 20px; }
   </style>
 </head>
 <body>
-  <div class="pda-container">
-    <img src="central.png" alt="Central" class="center-img">
+  <div class="pda">
+    <!-- Imagen central -->
+    <img src="central.png" alt="Centro" class="central" />
 
-    <a href="pagina1.html"><img src="icon1.png" alt="Icono 1" class="link-img img1"></a>
-    <a href="pagina2.html"><img src="icon2.png" alt="Icono 2" class="link-img img2"></a>
-    <a href="pagina3.html"><img src="icon3.png" alt="Icono 3" class="link-img img3"></a>
-    <a href="pagina4.html"><img src="icon4.png" alt="Icono 4" class="link-img img4"></a>
-    <a href="pagina5.html"><img src="icon5.png" alt="Icono 5" class="link-img img5"></a>
-    <a href="pagina6.html"><img src="icon6.png" alt="Icono 6" class="link-img img6"></a>
-    <a href="pagina7.html"><img src="icon7.png" alt="Icono 7" class="link-img img7"></a>
+    <!-- Íconos con enlaces -->
+    <a href="contrabando.html"><img src="icon1.png" alt="Contrabando" class="icon pos1"></a>
+    <a href="hackeo.html"><img src="icon2.png" alt="Hackeo" class="icon pos2"></a>
+    <a href="armas.html"><img src="icon3.png" alt="Armas" class="icon pos3"></a>
+    <a href="drogas.html"><img src="icon4.png" alt="Drogas" class="icon pos4"></a>
+    <a href="vehiculos.html"><img src="icon5.png" alt="Vehículos" class="icon pos5"></a>
+    <a href="facciones.html"><img src="icon6.png" alt="Facciones" class="icon pos6"></a>
+    <a href="interceptados.html"><img src="icon7.png" alt="Interceptados" class="icon pos7"></a>
   </div>
 </body>
 </html>
