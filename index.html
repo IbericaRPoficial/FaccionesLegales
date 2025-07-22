@@ -2,8 +2,9 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>PDA Policial con Secciones por Facción</title>
+<title>PDA Policial con Secciones y HTML Externo</title>
 <style>
+  /* (mismo CSS que antes) */
   body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -88,6 +89,7 @@
     font-family: monospace;
     overflow-y: auto;
     color: #ddd;
+    height: 100%;
   }
   .input-modal {
     position: fixed;
@@ -304,7 +306,6 @@
     const contenido = document.getElementById('contenido');
 
     if (id === 'baseDatos') {
-      // Mostrar contenido con registros + botón añadir
       contenido.innerHTML = `
         <h2>Base de Datos de ${faccionActual}</h2>
         <button id="btnAgregarRegistro" style="margin-bottom: 15px; padding: 10px; background:#007bff; border:none; color:#fff; cursor:pointer;">
@@ -313,11 +314,31 @@
         <div id="listaRegistros" style="max-height: 450px; overflow-y: auto; background:#222; padding:10px; border-radius:6px;"></div>
       `;
       document.getElementById('btnAgregarRegistro').onclick = abrirRegistroModal;
-      cargarRegistros(); // Carga los registros dentro del div listaRegistros
+      cargarRegistros();
       return;
     }
 
-    // Placeholder para otras secciones
+    if (id === 'oficializador') {
+      // Mapear facción a archivo HTML oficializador
+      const archivosOficializador = {
+        PMM: 'oficializadorpmm.html',
+        CNP: 'oficializadorcnp.html',
+        GC: 'officializadorgc.html',
+        UCO: 'oficializadoruco.html',
+        CNI: 'oficializadorcni.html',
+        BOM: 'oficializadorbom.html',
+        SAMUR: 'oficializadorsamur.html'
+      };
+      let archivo = archivosOficializador[faccionActual];
+      if (!archivo) {
+        contenido.innerHTML = `<p>Archivo oficializador no disponible para la facción ${faccionActual}.</p>`;
+        return;
+      }
+      contenido.innerHTML = `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`;
+      return;
+    }
+
+    // Otros casos
     contenido.innerHTML = `<h2>${secciones.find(s => s.id === id).nombre}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
   }
 
@@ -375,17 +396,17 @@
     document.getElementById('registroDescripcion').value = '';
     document.getElementById('registroPDF').value = '';
 
+    cargarRegistros();
     cargarRegistrosModal();
-    cargarRegistros(); // Actualizar listado en panel principal también
+    alert('Registro guardado correctamente.');
   }
 
-  // Cargar y mostrar registros Firebase en panel derecho
+  // Cargar registros para mostrar en la sección baseDatos
   function cargarRegistros() {
     const listaDiv = document.getElementById('listaRegistros');
-    if (!listaDiv) return; // Si no está visible aún
-    const registrosRef = ref(db, `registros/${faccionActual}`);
-    listaDiv.innerHTML = 'Cargando registros...';
+    if (!listaDiv) return;
 
+    const registrosRef = ref(db, `registros/${faccionActual}`);
     onValue(registrosRef, (snapshot) => {
       const datos = snapshot.val();
       if (!datos) {
@@ -396,8 +417,7 @@
       Object.values(datos).forEach(reg => {
         const div = document.createElement('div');
         div.className = 'registro';
-        // Aquí el cambio para mostrar siempre el usuario actual
-        let html = `<strong>${reg.nombre}</strong> (por: ${usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
+        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
         if (reg.pdf) {
           html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
         }
@@ -407,13 +427,12 @@
     });
   }
 
-  // Cargar y mostrar registros Firebase en modal
+  // Cargar registros para modal (solo listado)
   function cargarRegistrosModal() {
     const listaDiv = document.getElementById('listaRegistrosModal');
     if (!listaDiv) return;
-    const registrosRef = ref(db, `registros/${faccionActual}`);
-    listaDiv.innerHTML = 'Cargando registros...';
 
+    const registrosRef = ref(db, `registros/${faccionActual}`);
     onValue(registrosRef, (snapshot) => {
       const datos = snapshot.val();
       if (!datos) {
@@ -424,8 +443,7 @@
       Object.values(datos).forEach(reg => {
         const div = document.createElement('div');
         div.className = 'registro';
-        // Aquí también el cambio para mostrar usuario actual
-        let html = `<strong>${reg.nombre}</strong> (por: ${usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
+        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
         if (reg.pdf) {
           html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
         }
@@ -435,7 +453,7 @@
     });
   }
 
-  // Al cargar la página, cargar usuario guardado o pedirlo
+  // Eventos onload
   window.onload = () => {
     const guardado = localStorage.getItem('usuarioPDA');
     if (guardado) {
@@ -447,6 +465,7 @@
     }
   };
 
+  // Exportar funciones para usar en HTML
   window.guardarUsuario = guardarUsuario;
   window.cambiarUsuario = cambiarUsuario;
   window.accederFaccion = accederFaccion;
@@ -456,6 +475,5 @@
   window.cerrarRegistroModal = cerrarRegistroModal;
   window.guardarRegistro = guardarRegistro;
 </script>
-
 </body>
 </html>
