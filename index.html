@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>PDA Facciones Ilegales</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .pda-container {
+      position: relative;
+      width: 600px;
+      height: 600px;
+    }
+
+    .center-img {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #66ff66;
+    }
+
+    .link-img {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+
+    .link-img:hover {
+      transform: scale(1.1);
+      border-color: #66ff66;
+    }
+
+    /* Posiciones circulares */
+    .img1 { top: 0; left: 50%; transform: translateX(-50%); }
+    .img2 { top: 15%; left: 85%; transform: translate(-50%, -50%); }
+    .img3 { top: 50%; left: 100%; transform: translate(-100%, -50%); }
+    .img4 { bottom: 15%; left: 85%; transform: translate(-50%, 50%); }
+    .img5 { bottom: 0; left: 50%; transform: translateX(-50%); }
+    .img6 { bottom: 15%; left: 15%; transform: translate(-50%, 50%); }
+    .img7 { top: 15%; left: 15%; transform: translate(-50%, -50%); }
+  </style>
+</head>
+<body>
+  <div class="pda-container">
+    <img src="central.png" alt="Central" class="center-img">
+
+    <a href="pagina1.html"><img src="icon1.png" alt="Icono 1" class="link-img img1"></a>
+    <a href="pagina2.html"><img src="icon2.png" alt="Icono 2" class="link-img img2"></a>
+    <a href="pagina3.html"><img src="icon3.png" alt="Icono 3" class="link-img img3"></a>
+    <a href="pagina4.html"><img src="icon4.png" alt="Icono 4" class="link-img img4"></a>
+    <a href="pagina5.html"><img src="icon5.png" alt="Icono 5" class="link-img img5"></a>
+    <a href="pagina6.html"><img src="icon6.png" alt="Icono 6" class="link-img img6"></a>
+    <a href="pagina7.html"><img src="icon7.png" alt="Icono 7" class="link-img img7"></a>
+  </div>
+</body>
+</html>
