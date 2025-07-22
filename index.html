@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<title>PDA Policial con Secciones y HTML Externo</title>
+<title>PDA Policial con Secciones y Contraseñas por Permisos</title>
 <style>
   body {
     margin: 0;
@@ -147,7 +147,7 @@
 <div class="pda">
   <div class="top-bar">
     <div>Terminal Central Policial</div>
-    <div id="usuario">Usuario: ---</div>
+    <div id="usuario">Placa: ---</div>
   </div>
   <div class="main">
     <div class="sidebar" id="sidebar">
@@ -226,14 +226,36 @@
   const db = getDatabase(app);
   const storage = getStorage(app);
 
+  // Contraseñas con permisos (secciones permitidas) por facción
   const contraseñas = {
-    PMM: 'pmm123',
-    CNP: 'cnp456',
-    GC: 'gc789',
-    UCO: 'uco321',
-    CNI: 'cni999',
-    BOM: 'bom111',
-    SAMUR: 'samur555'
+    PMM: {
+      'pmm123': ['baseDatos', 'informes'],
+      'pmmAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    CNP: {
+      'cnp456': ['baseDatos', 'informes'],
+      'cnpAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    GC: {
+      'gc789': ['baseDatos', 'informes'],
+      'gcAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    UCO: {
+      'uco321': ['baseDatos', 'informes'],
+      'ucoAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    CNI: {
+      'cni999': ['baseDatos', 'informes'],
+      'cniAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    BOM: {
+      'bom111': ['baseDatos', 'informes'],
+      'bomAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    },
+    SAMUR: {
+      'samur555': ['baseDatos', 'informes'],
+      'samurAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+    }
   };
 
   const secciones = [
@@ -247,6 +269,7 @@
   let usuarioActual = null;
   let faccionActual = null;
   let seccionActual = null;
+  let seccionesPermitidas = [];
 
   // Usuario
   function guardarUsuario() {
@@ -254,7 +277,7 @@
     if (nombre) {
       usuarioActual = nombre;
       localStorage.setItem('usuarioPDA', nombre);
-      document.getElementById('usuario').textContent = 'Usuario: ' + nombre;
+      document.getElementById('usuario').textContent = 'Placa: ' + nombre;
       document.getElementById('usuarioModal').style.display = 'none';
     }
   }
@@ -267,6 +290,7 @@
   function accederFaccion(faccion) {
     faccionActual = faccion;
     seccionActual = null;
+    seccionesPermitidas = [];
     document.getElementById('inputPassword').value = '';
     document.getElementById('labelPassword').textContent = `Introduce la contraseña para ${faccion}`;
     document.getElementById('passwordModal').style.display = 'flex';
@@ -274,7 +298,9 @@
 
   function verificarPassword() {
     const clave = document.getElementById('inputPassword').value;
-    if (clave === contraseñas[faccionActual]) {
+    const fac = faccionActual;
+    if (contraseñas[fac] && contraseñas[fac][clave]) {
+      seccionesPermitidas = contraseñas[fac][clave]; // guardamos secciones que puede ver el usuario
       document.getElementById('passwordModal').style.display = 'none';
       mostrarMenuFaccion();
     } else {
@@ -288,14 +314,16 @@
     menuContainer.style.display = 'flex';
     menuContainer.innerHTML = '';
 
-    secciones.forEach(sec => {
-      const btn = document.createElement('button');
-      btn.textContent = sec.nombre;
-      btn.onclick = () => cargarSeccion(sec.id);
-      menuContainer.appendChild(btn);
-    });
+    // Filtramos secciones que puede ver el usuario
+    secciones
+      .filter(sec => seccionesPermitidas.includes(sec.id))
+      .forEach(sec => {
+        const btn = document.createElement('button');
+        btn.textContent = sec.nombre;
+        btn.onclick = () => cargarSeccion(sec.id);
+        menuContainer.appendChild(btn);
+      });
 
-    // Mostrar info bienvenida o primera sección
     document.getElementById('contenido').textContent = `Accedido a facción ${faccionActual}. Selecciona una sección.`;
   }
 
@@ -472,7 +500,7 @@
     const guardado = localStorage.getItem('usuarioPDA');
     if (guardado) {
       usuarioActual = guardado;
-      document.getElementById('usuario').textContent = 'Usuario: ' + guardado;
+      document.getElementById('usuario').textContent = 'Placa: ' + guardado;
       document.getElementById('usuarioModal').style.display = 'none';
     } else {
       document.getElementById('usuarioModal').style.display = 'flex';
