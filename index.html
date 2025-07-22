@@ -1,78 +1,461 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>PDA Ilegal</title>
-  <style>
-    body {
-      margin: 0;
-      background: radial-gradient(circle at center, #000000 60%, #0a0a0a 100%);
-      font-family: 'Courier New', monospace;
-      color: #00ff99;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .pda {
-      position: relative;
-      width: 700px;
-      height: 700px;
-      background: #111;
-      border: 3px solid #00ff99;
-      box-shadow: 0 0 25px #00ff99;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .central {
-      position: absolute;
-      width: 160px;
-      height: 160px;
-      z-index: 2;
-    }
-
-    .icon {
-      position: absolute;
-      width: 100px;
-      height: 100px;
-      transition: transform 0.3s, filter 0.3s;
-      filter: brightness(0.8);
-      z-index: 1;
-    }
-
-    .icon:hover {
-      transform: scale(1.1);
-      filter: brightness(1.5) drop-shadow(0 0 5px #00ff99);
-    }
-
-    /* Posiciones orbitando al centro */
-    .pos1 { top: 10px; left: 50%; transform: translateX(-50%); }
-    .pos2 { top: 100px; right: 20px; }
-    .pos3 { top: 50%; right: 0; transform: translateY(-50%); }
-    .pos4 { bottom: 100px; right: 20px; }
-    .pos5 { bottom: 10px; left: 50%; transform: translateX(-50%); }
-    .pos6 { bottom: 100px; left: 20px; }
-    .pos7 { top: 100px; left: 20px; }
-  </style>
+<meta charset="UTF-8" />
+<title>PDA Policial con Secciones por Facción</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: url('central.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #ddd;
+  }
+  .pda {
+    background-color: #1b1b1b;
+    border: 2px solid #3a3a3a;
+    width: 1000px;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 0 5px #000;
+  }
+  .top-bar {
+    background-color: #2d2d2d;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    border-bottom: 1px solid #444;
+    color: #eee;
+  }
+  .main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+  .sidebar {
+    width: 220px;
+    background-color: #252525;
+    border-right: 1px solid #444;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar button {
+    background-color: #303030;
+    color: #ccc;
+    border: none;
+    padding: 12px;
+    margin-bottom: 10px;
+    text-align: left;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+  }
+  .sidebar button:hover {
+    background-color: #3f3f3f;
+  }
+  .faccion-menu {
+    width: 200px;
+    background: #1a1a1a;
+    border-right: 1px solid #444;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+  .faccion-menu button {
+    background-color: #2d2d2d;
+    color: #bbb;
+    border: none;
+    padding: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-family: monospace;
+  }
+  .faccion-menu button:hover {
+    background-color: #444;
+    color: #fff;
+  }
+  .content {
+    flex: 1;
+    padding: 20px;
+    font-family: monospace;
+    overflow-y: auto;
+    color: #ddd;
+  }
+  .input-modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+  }
+  .input-box {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    color: #fff;
+    box-shadow: 0 0 10px #000;
+    width: 320px;
+  }
+  .input-box input, .input-box textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background: #1a1a1a;
+    color: #fff;
+    font-family: monospace;
+  }
+  .input-box button {
+    margin-top: 10px;
+    padding: 12px;
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .registro {
+    background: #222;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+  .registro a {
+    color: #66ccff;
+    text-decoration: none;
+  }
+  .registro a:hover {
+    text-decoration: underline;
+  }
+</style>
 </head>
 <body>
-  <div class="pda">
-    <!-- Imagen central -->
-    <img src="central.png" alt="Centro" class="central" />
 
-    <!-- Íconos con enlaces -->
-    <a href="contrabando.html"><img src="icon1.png" alt="Contrabando" class="icon pos1"></a>
-    <a href="hackeo.html"><img src="icon2.png" alt="Hackeo" class="icon pos2"></a>
-    <a href="armas.html"><img src="icon3.png" alt="Armas" class="icon pos3"></a>
-    <a href="drogas.html"><img src="icon4.png" alt="Drogas" class="icon pos4"></a>
-    <a href="vehiculos.html"><img src="icon5.png" alt="Vehículos" class="icon pos5"></a>
-    <a href="facciones.html"><img src="icon6.png" alt="Facciones" class="icon pos6"></a>
-    <a href="interceptados.html"><img src="icon7.png" alt="Interceptados" class="icon pos7"></a>
+<div class="pda">
+  <div class="top-bar">
+    <div>Terminal Central Policial</div>
+    <div id="usuario">Usuario: ---</div>
   </div>
+  <div class="main">
+    <div class="sidebar" id="sidebar">
+      <button onclick="accederFaccion('PMM')">PMM</button>
+      <button onclick="accederFaccion('CNP')">CNP</button>
+      <button onclick="accederFaccion('GC')">Guardia Civil</button>
+      <button onclick="accederFaccion('UCO')">UCO</button>
+      <button onclick="accederFaccion('CNI')">CNI</button>
+      <button onclick="accederFaccion('BOM')">Bomberos</button>
+      <button onclick="accederFaccion('SAMUR')">SAMUR</button>
+      <button onclick="cambiarUsuario()">Cambiar Usuario</button>
+    </div>
+    <div id="faccionMenuContainer" style="display:none; flex-direction: column; background:#1a1a1a; border-right: 1px solid #444; padding:10px; width: 220px;">
+      <!-- Menú se inyecta aquí -->
+    </div>
+    <div class="content" id="contenido">
+      Selecciona una facción en el panel lateral para acceder a su información.
+    </div>
+  </div>
+</div>
+
+<!-- Modal para usuario -->
+<div class="input-modal" id="usuarioModal">
+  <div class="input-box">
+    <label>Introduce tu nombre de usuario:</label>
+    <input type="text" id="nombreUsuario" />
+    <button onclick="guardarUsuario()">Entrar</button>
+  </div>
+</div>
+
+<!-- Modal para contraseña -->
+<div class="input-modal" id="passwordModal" style="display:none;">
+  <div class="input-box">
+    <label id="labelPassword">Introduce la contraseña:</label>
+    <input type="password" id="inputPassword" />
+    <button onclick="verificarPassword()">Acceder</button>
+  </div>
+</div>
+
+<!-- Modal para base de datos -->
+<div class="input-modal" id="registroModal" style="display:none; overflow-y:auto; max-height:90vh;">
+  <div class="input-box" style="width: 600px; max-height: 90vh; overflow-y: auto;">
+    <h3 id="tituloFaccion">Base de datos</h3>
+    <label>Nombre del registro:</label>
+    <input type="text" id="registroNombre" />
+    <label>Descripción:</label>
+    <textarea id="registroDescripcion" rows="3"></textarea>
+    <label>Subir archivo PDF (opcional):</label>
+    <input type="file" id="registroPDF" accept="application/pdf" />
+    <button onclick="guardarRegistro()">Guardar registro</button>
+    <hr />
+    <h4>Registros existentes:</h4>
+    <div id="listaRegistrosModal" style="max-height: 300px; overflow-y: auto;"></div>
+    <button onclick="cerrarRegistroModal()">Cerrar</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+  import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
+
+  // Config Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyCG1rHDV6sXnuNmuKujgT1jWoryELevCO8",
+    authDomain: "ibericafaccionlegal.firebaseapp.com",
+    databaseURL: "https://ibericafaccionlegal-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ibericafaccionlegal",
+    storageBucket: "ibericafaccionlegal.firebasestorage.app",
+    messagingSenderId: "253236699510",
+    appId: "1:253236699510:web:09e85caf44a98df0e09a57",
+    measurementId: "G-Y8WRVFJQ0G"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const storage = getStorage(app);
+
+  const contraseñas = {
+    PMM: 'pmm123',
+    CNP: 'cnp456',
+    GC: 'gc789',
+    UCO: 'uco321',
+    CNI: 'cni999',
+    BOM: 'bom111',
+    SAMUR: 'samur555'
+  };
+
+  const secciones = [
+    { id: 'baseDatos', nombre: 'Base de Datos' },
+    { id: 'oficializador', nombre: 'Oficializador' },
+    { id: 'informes', nombre: 'Informes' },
+    { id: 'oposicionesCuestionario', nombre: 'Oposiciones Cuestionario' },
+    { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' }
+  ];
+
+  let usuarioActual = null;
+  let faccionActual = null;
+  let seccionActual = null;
+
+  // Usuario
+  function guardarUsuario() {
+    const nombre = document.getElementById('nombreUsuario').value.trim();
+    if (nombre) {
+      usuarioActual = nombre;
+      localStorage.setItem('usuarioPDA', nombre);
+      document.getElementById('usuario').textContent = 'Usuario: ' + nombre;
+      document.getElementById('usuarioModal').style.display = 'none';
+    }
+  }
+
+  function cambiarUsuario() {
+    document.getElementById('usuarioModal').style.display = 'flex';
+  }
+
+  // Contraseña y acceso facción
+  function accederFaccion(faccion) {
+    faccionActual = faccion;
+    seccionActual = null;
+    document.getElementById('inputPassword').value = '';
+    document.getElementById('labelPassword').textContent = `Introduce la contraseña para ${faccion}`;
+    document.getElementById('passwordModal').style.display = 'flex';
+  }
+
+  function verificarPassword() {
+    const clave = document.getElementById('inputPassword').value;
+    if (clave === contraseñas[faccionActual]) {
+      document.getElementById('passwordModal').style.display = 'none';
+      mostrarMenuFaccion();
+    } else {
+      alert('Contraseña incorrecta. Acceso denegado.');
+    }
+  }
+
+  // Mostrar menú lateral de secciones
+  function mostrarMenuFaccion() {
+    const menuContainer = document.getElementById('faccionMenuContainer');
+    menuContainer.style.display = 'flex';
+    menuContainer.innerHTML = '';
+
+    secciones.forEach(sec => {
+      const btn = document.createElement('button');
+      btn.textContent = sec.nombre;
+      btn.onclick = () => cargarSeccion(sec.id);
+      menuContainer.appendChild(btn);
+    });
+
+    // Mostrar info bienvenida o primera sección
+    document.getElementById('contenido').textContent = `Accedido a facción ${faccionActual}. Selecciona una sección.`;
+  }
+
+  // Cargar sección seleccionada
+  function cargarSeccion(id) {
+    seccionActual = id;
+    const contenido = document.getElementById('contenido');
+
+    if (id === 'baseDatos') {
+      // Mostrar contenido con registros + botón añadir
+      contenido.innerHTML = `
+        <h2>Base de Datos de ${faccionActual}</h2>
+        <button id="btnAgregarRegistro" style="margin-bottom: 15px; padding: 10px; background:#007bff; border:none; color:#fff; cursor:pointer;">
+          Añadir registro
+        </button>
+        <div id="listaRegistros" style="max-height: 450px; overflow-y: auto; background:#222; padding:10px; border-radius:6px;"></div>
+      `;
+      document.getElementById('btnAgregarRegistro').onclick = abrirRegistroModal;
+      cargarRegistros(); // Carga los registros dentro del div listaRegistros
+      return;
+    }
+
+    // Placeholder para otras secciones
+    contenido.innerHTML = `<h2>${secciones.find(s => s.id === id).nombre}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
+  }
+
+  // Modal base de datos y registros
+  function abrirRegistroModal() {
+    document.getElementById('registroModal').style.display = 'flex';
+    document.getElementById('tituloFaccion').textContent = `Base de Datos de ${faccionActual}`;
+    cargarRegistrosModal();
+  }
+
+  function cerrarRegistroModal() {
+    document.getElementById('registroModal').style.display = 'none';
+    document.getElementById('registroNombre').value = '';
+    document.getElementById('registroDescripcion').value = '';
+    document.getElementById('registroPDF').value = '';
+    document.getElementById('listaRegistrosModal').innerHTML = '';
+  }
+
+  // Guardar registro con posible PDF
+  async function guardarRegistro() {
+    const nombre = document.getElementById('registroNombre').value.trim();
+    const descripcion = document.getElementById('registroDescripcion').value.trim();
+    const archivoPDF = document.getElementById('registroPDF').files[0];
+
+    if (!nombre || !descripcion) {
+      alert('Rellena nombre y descripción');
+      return;
+    }
+
+    let urlPDF = null;
+    if (archivoPDF) {
+      if (archivoPDF.type !== 'application/pdf') {
+        alert('Solo archivos PDF permitidos');
+        return;
+      }
+      const storageRef = sRef(storage, `pdfs/${faccionActual}/${Date.now()}_${archivoPDF.name}`);
+      try {
+        await uploadBytes(storageRef, archivoPDF);
+        urlPDF = await getDownloadURL(storageRef);
+      } catch(e) {
+        alert('Error al subir PDF: ' + e.message);
+        return;
+      }
+    }
+
+    push(ref(db, `registros/${faccionActual}`), {
+      nombre,
+      descripcion,
+      pdf: urlPDF,
+      fecha: new Date().toISOString(),
+      usuario: usuarioActual
+    });
+
+    document.getElementById('registroNombre').value = '';
+    document.getElementById('registroDescripcion').value = '';
+    document.getElementById('registroPDF').value = '';
+
+    cargarRegistrosModal();
+    cargarRegistros(); // Actualizar listado en panel principal también
+  }
+
+  // Cargar y mostrar registros Firebase en panel derecho
+  function cargarRegistros() {
+    const listaDiv = document.getElementById('listaRegistros');
+    if (!listaDiv) return; // Si no está visible aún
+    const registrosRef = ref(db, `registros/${faccionActual}`);
+    listaDiv.innerHTML = 'Cargando registros...';
+
+    onValue(registrosRef, (snapshot) => {
+      const datos = snapshot.val();
+      if (!datos) {
+        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
+        return;
+      }
+      listaDiv.innerHTML = '';
+      Object.values(datos).forEach(reg => {
+        const div = document.createElement('div');
+        div.className = 'registro';
+        // Aquí el cambio para mostrar siempre el usuario actual
+        let html = `<strong>${reg.nombre}</strong> (por: ${usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
+        if (reg.pdf) {
+          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
+        }
+        div.innerHTML = html;
+        listaDiv.appendChild(div);
+      });
+    });
+  }
+
+  // Cargar y mostrar registros Firebase en modal
+  function cargarRegistrosModal() {
+    const listaDiv = document.getElementById('listaRegistrosModal');
+    if (!listaDiv) return;
+    const registrosRef = ref(db, `registros/${faccionActual}`);
+    listaDiv.innerHTML = 'Cargando registros...';
+
+    onValue(registrosRef, (snapshot) => {
+      const datos = snapshot.val();
+      if (!datos) {
+        listaDiv.innerHTML = '<i>No hay registros aún.</i>';
+        return;
+      }
+      listaDiv.innerHTML = '';
+      Object.values(datos).forEach(reg => {
+        const div = document.createElement('div');
+        div.className = 'registro';
+        // Aquí también el cambio para mostrar usuario actual
+        let html = `<strong>${reg.nombre}</strong> (por: ${usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
+        if (reg.pdf) {
+          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
+        }
+        div.innerHTML = html;
+        listaDiv.appendChild(div);
+      });
+    });
+  }
+
+  // Al cargar la página, cargar usuario guardado o pedirlo
+  window.onload = () => {
+    const guardado = localStorage.getItem('usuarioPDA');
+    if (guardado) {
+      usuarioActual = guardado;
+      document.getElementById('usuario').textContent = 'Usuario: ' + guardado;
+      document.getElementById('usuarioModal').style.display = 'none';
+    } else {
+      document.getElementById('usuarioModal').style.display = 'flex';
+    }
+  };
+
+  window.guardarUsuario = guardarUsuario;
+  window.cambiarUsuario = cambiarUsuario;
+  window.accederFaccion = accederFaccion;
+  window.verificarPassword = verificarPassword;
+  window.cargarSeccion = cargarSeccion;
+  window.abrirRegistroModal = abrirRegistroModal;
+  window.cerrarRegistroModal = cerrarRegistroModal;
+  window.guardarRegistro = guardarRegistro;
+</script>
+
 </body>
 </html>
