@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulario Denuncias Ibercarp</title>
+
+  <!-- Firebase v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #f68b1f;
+    }
+    form {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #333;
+      color: white;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #f68b1f;
+      border: none;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🛑 Formulario de Denuncias - Ibercarp</h1>
+
+  <form id="denunciaForm">
+    <label for="nombreDenunciante">Nombre del Denunciante:</label>
+    <input type="text" id="nombreDenunciante" required />
+
+    <label for="dniDenunciante">DNI del Denunciante:</label>
+    <input type="text" id="dniDenunciante" required />
+
+    <label for="nombreDenunciado">Nombre del Denunciado:</label>
+    <input type="text" id="nombreDenunciado" required />
+
+    <label for="dniDenunciado">DNI del Denunciado:</label>
+    <input type="text" id="dniDenunciado" required />
+
+    <label for="idDiscord">ID Discord del Denunciado (para ping):</label>
+    <input type="text" id="idDiscord" placeholder="Ej: 123456789012345678" required />
+
+    <label for="razonDenuncia">Razón (extendido):</label>
+    <textarea id="razonDenuncia" rows="5" required></textarea>
+
+    <label for="urlEvidencia">URL Imagen de pruebas (opcional):</label>
+    <input type="url" id="urlEvidencia" placeholder="https://..." />
+
+    <label for="placaPolicia">Placa del Policía:</label>
+    <input type="text" id="placaPolicia" required />
+
+    <button type="submit">Enviar denuncia</button>
+  </form>
+
+  <script>
+    // Firebase config con URL correcta región europe-west1
+    const firebaseConfig = {
+      apiKey: "AIzaSyAYtvMaXQ_zbnn-06l16GX7jlAbIqYy0yQ",
+      authDomain: "denuncias-f9518.firebaseapp.com",
+      databaseURL: "https://denuncias-f9518-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "denuncias-f9518",
+      storageBucket: "denuncias-f9518.firebasestorage.app",
+      messagingSenderId: "827838987497",
+      appId: "1:827838987497:web:b05b18f49b822c5a2c8478",
+      measurementId: "G-7PNJ0D7CEW"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    const webhookURL = "https://discord.com/api/webhooks/1400826378487857203/bfsqIF6SlsamlnKSJMXf8kjJK_-VVyWqOVyLfV3uJs7iQ-p3VZxWNU1b0nLzu3empz-W";
+
+    const form = document.getElementById('denunciaForm');
+
+    // Función para generar nº denuncia irrepetible (7 cifras + 1 aleatorio)
+    async function generarNumeroDenunciaUnico() {
+      const min = 1000000; // 7 cifras min
+      const max = 9999999; // 7 cifras max
+
+      let numero;
+      let existe = true;
+      while (existe) {
+        numero = Math.floor(Math.random() * (max - min + 1)) + min;
+        // Le añadimos un dígito random al final (0-9)
+        numero = `${numero}${Math.floor(Math.random() * 10)}`;
+
+        // Comprobamos si existe en la base
+        const snapshot = await db.ref('denuncias').orderByChild('numeroDenuncia').equalTo(numero).once('value');
+        existe = snapshot.exists();
+      }
+      return numero;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      // Pedir contraseña con prompt antes de enviar
+      const passwordInput = prompt("Introduce la contraseña para enviar la denuncia:");
+
+      const correctPassword = "t8ot/95l(YHf";
+
+      if (passwordInput !== correctPassword) {
+        alert('Contraseña incorrecta. No se ha enviado la denuncia.');
+        return;
+      }
+
+      const nombreDenunciante = document.getElementById('nombreDenunciante').value.trim();
+      const dniDenunciante = document.getElementById('dniDenunciante').value.trim();
+      const nombreDenunciado = document.getElementById('nombreDenunciado').value.trim();
+      const dniDenunciado = document.getElementById('dniDenunciado').value.trim();
+      const idDiscord = document.getElementById('idDiscord').value.trim();
+      const razonDenuncia = document.getElementById('razonDenuncia').value.trim();
+      const urlEvidencia = document.getElementById('urlEvidencia').value.trim();
+      const placaPolicia = document.getElementById('placaPolicia').value.trim();
+      const fecha = new Date().toLocaleString();
+
+      if (!nombreDenunciante || !dniDenunciante || !nombreDenunciado || !dniDenunciado || !idDiscord || !razonDenuncia || !placaPolicia) {
+        alert('Por favor rellena todos los campos obligatorios.');
+        return;
+      }
+
+      const numeroDenuncia = await generarNumeroDenunciaUnico();
+
+      const denuncia = {
+        numeroDenuncia,
+        nombreDenunciante,
+        dniDenunciante,
+        nombreDenunciado,
+        dniDenunciado,
+        idDiscord,
+        razonDenuncia,
+        urlEvidencia: urlEvidencia || null,
+        placaPolicia,
+        fecha
+      };
+
+      // Guardar en Firebase
+      const nuevaDenunciaRef = db.ref('denuncias').push();
+      nuevaDenunciaRef.set(denuncia)
+        .then(() => {
+          // Enviar embed a webhook Discord sin ping dentro del embed, solo en content
+          const embed = {
+            title: "Nueva denuncia registrada",
+            color: 0xf68b1f, // naranja
+            fields: [
+              { name: "Nº Denuncia", value: `#${numeroDenuncia}`, inline: true },
+              { name: "Nombre del Denunciante", value: nombreDenunciante, inline: true },
+              { name: "DNI Denunciante", value: dniDenunciante, inline: true },
+              { name: "Nombre del Denunciado", value: nombreDenunciado, inline: true },
+              { name: "DNI Denunciado", value: dniDenunciado, inline: true },
+              { name: "Razón (Extendido)", value: razonDenuncia, inline: false },
+              { name: "URL (Imagen de pruebas)", value: urlEvidencia || "No proporcionada", inline: false },
+              { name: "Fecha y Hora", value: fecha, inline: true },
+              { name: "Placa del Policía", value: placaPolicia, inline: true }
+            ]
+          };
+
+          return fetch(webhookURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content: `<@${idDiscord}>`, // ping fuera del embed
+              username: "Ibercarp - Sistema de Denuncias",
+              embeds: [embed]
+            })
+          });
+        })
+        .then(() => {
+          alert('Denuncia enviada y guardada correctamente.');
+          form.reset();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Error al enviar o guardar la denuncia: ' + err.message);
+        });
+    });
+  </script>
+
+</body>
+</html>
