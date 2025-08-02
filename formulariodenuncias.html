@@ -88,16 +88,16 @@
   </form>
 
   <script>
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
-  authDomain: "ibericadenunciasyincauta.firebaseapp.com",
-  projectId: "ibericadenunciasyincauta",
-  storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
-  messagingSenderId: "391793508120",
-  appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
-  measurementId: "G-TT88LPHZPR"
-};
+    // NUEVA CONFIGURACIÓN DE FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
+      authDomain: "ibericadenunciasyincauta.firebaseapp.com",
+      projectId: "ibericadenunciasyincauta",
+      storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
+      messagingSenderId: "391793508120",
+      appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
+      measurementId: "G-TT88LPHZPR"
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -106,31 +106,26 @@ const firebaseConfig = {
 
     const form = document.getElementById('denunciaForm');
 
-    // Función para generar nº denuncia irrepetible (7 cifras + 1 aleatorio)
     async function generarNumeroDenunciaUnico() {
-      const min = 1000000; // 7 cifras min
-      const max = 9999999; // 7 cifras max
-
+      const min = 1000000;
+      const max = 9999999;
       let numero;
       let existe = true;
+
       while (existe) {
         numero = Math.floor(Math.random() * (max - min + 1)) + min;
-        // Le añadimos un dígito random al final (0-9)
         numero = `${numero}${Math.floor(Math.random() * 10)}`;
-
-        // Comprobamos si existe en la base
         const snapshot = await db.ref('denuncias').orderByChild('numeroDenuncia').equalTo(numero).once('value');
         existe = snapshot.exists();
       }
+
       return numero;
     }
 
     form.addEventListener('submit', async e => {
       e.preventDefault();
 
-      // Pedir contraseña con prompt antes de enviar
       const passwordInput = prompt("Introduce la contraseña para enviar la denuncia:");
-
       const correctPassword = "t8ot/95l(YHf";
 
       if (passwordInput !== correctPassword) {
@@ -168,14 +163,12 @@ const firebaseConfig = {
         fecha
       };
 
-      // Guardar en Firebase
       const nuevaDenunciaRef = db.ref('denuncias').push();
       nuevaDenunciaRef.set(denuncia)
         .then(() => {
-          // Enviar embed a webhook Discord sin ping dentro del embed, solo en content
           const embed = {
             title: "Nueva denuncia registrada",
-            color: 0xf68b1f, // naranja
+            color: 0xf68b1f,
             fields: [
               { name: "Nº Denuncia", value: `#${numeroDenuncia}`, inline: true },
               { name: "Nombre del Denunciante", value: nombreDenunciante, inline: true },
@@ -193,7 +186,7 @@ const firebaseConfig = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              content: `<@${idDiscord}>`, // ping fuera del embed
+              content: `<@${idDiscord}>`,
               username: "Ibercarp - Sistema de Denuncias",
               embeds: [embed]
             })
@@ -212,4 +205,3 @@ const firebaseConfig = {
 
 </body>
 </html>
-
