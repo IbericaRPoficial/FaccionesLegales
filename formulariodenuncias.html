@@ -89,15 +89,17 @@
 
   <script>
     // NUEVA CONFIGURACIÓN DE FIREBASE
-    const firebaseConfig = {
-      apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
-      authDomain: "ibericadenunciasyincauta.firebaseapp.com",
-      projectId: "ibericadenunciasyincauta",
-      storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
-      messagingSenderId: "391793508120",
-      appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
-      measurementId: "G-TT88LPHZPR"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
+    authDomain: "ibericadenunciasyincauta.firebaseapp.com",
+    databaseURL: "https://ibericadenunciasyincauta-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "ibericadenunciasyincauta",
+    storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
+    messagingSenderId: "391793508120",
+    appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
+    measurementId: "G-TT88LPHZPR"
+  };
+
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -205,3 +207,4 @@
 
 </body>
 </html>
+
