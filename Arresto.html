@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Formulario de Arrestos</title>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #007BFF;
+    }
+    form {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #333;
+      color: white;
+      margin-top: 5px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #007BFF;
+      border: none;
+      color: white;
+      font-weight: bold;
+      padding: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📘 FORMULARIO DE ARRESTOS</h1>
+
+  <form id="arrestoForm">
+    <label for="idDetenido">ID del Detenido (para ping):</label>
+    <input type="text" id="idDetenido" required />
+
+    <label for="idAgente1">ID Agente 1 (para ping):</label>
+    <input type="text" id="idAgente1" required />
+
+    <label for="idAgente2">ID Agente 2 (opcional, para ping):</label>
+    <input type="text" id="idAgente2" />
+
+    <label for="articulos">Artículos:</label>
+    <textarea id="articulos" rows="3" required></textarea>
+
+    <label for="totalEuros">Total €:</label>
+    <input type="number" id="totalEuros" required />
+
+    <label for="pruebaGrafica">Prueba Gráfica (URL de imagen):</label>
+    <input type="url" id="pruebaGrafica" placeholder="https://..." required />
+
+    <button type="submit">Enviar arresto</button>
+  </form>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
+      authDomain: "ibericadenunciasyincauta.firebaseapp.com",
+      databaseURL: "https://ibericadenunciasyincauta-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "ibericadenunciasyincauta",
+      storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
+      messagingSenderId: "391793508120",
+      appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
+      measurementId: "G-TT88LPHZPR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const form = document.getElementById('arrestoForm');
+    const webhookURL = "https://discord.com/api/webhooks/1402020288912293991/A-M6L-jBYneAU5dPhHKjNF8xPJ5FORKwpgG15fsvP2fXZoMBnBhesgQ6KmnkrULPymlU";
+
+    async function obtenerNumeroArrestoSecuencial() {
+      const snapshot = await db.ref('arrestos').once('value');
+      let max = 0;
+      snapshot.forEach(child => {
+        const arresto = child.val();
+        if (arresto.numeroArresto && !isNaN(arresto.numeroArresto)) {
+          const num = parseInt(arresto.numeroArresto);
+          if (num > max) max = num;
+        }
+      });
+      return max + 1;
+    }
+
+    form.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      const passwordInput = prompt("Introduce la contraseña para enviar el arresto:");
+      const correctPassword = "t8ot/95l(YHf";
+      if (passwordInput !== correctPassword) {
+        alert('Contraseña incorrecta. No se ha enviado el arresto.');
+        return;
+      }
+
+      const idDetenido = document.getElementById('idDetenido').value.trim();
+      const idAgente1 = document.getElementById('idAgente1').value.trim();
+      const idAgente2 = document.getElementById('idAgente2').value.trim();
+      const articulos = document.getElementById('articulos').value.trim();
+      const totalEuros = document.getElementById('totalEuros').value.trim();
+      const pruebaGrafica = document.getElementById('pruebaGrafica').value.trim();
+      const fecha = new Date().toLocaleString();
+
+      if (!idDetenido || !idAgente1 || !articulos || !totalEuros || !pruebaGrafica) {
+        alert('Por favor rellena todos los campos obligatorios.');
+        return;
+      }
+
+      const numeroArresto = await obtenerNumeroArrestoSecuencial();
+
+      const arresto = {
+        numeroArresto,
+        idDetenido,
+        idAgente1,
+        idAgente2: idAgente2 || "No asignado",
+        articulos,
+        totalEuros,
+        pruebaGrafica,
+        fecha
+      };
+
+      db.ref('arrestos').push(arresto)
+        .then(() => {
+          const embed = {
+            title: "Nuevo Arresto Registrado",
+            color: 0x00008b,
+            fields: [
+              { name: "Nº Arresto", value: `#${numeroArresto}`, inline: true },
+              { name: "@ Detenido", value: `<@${idDetenido}>`, inline: true },
+              { name: "@ Agente 1", value: `<@${idAgente1}>`, inline: true },
+              { name: "@ Agente 2", value: idAgente2 ? `<@${idAgente2}>` : "No asignado", inline: true },
+              { name: "Artículos Aplicados", value: articulos, inline: false },
+              { name: "Total (€)", value: `${totalEuros} €`, inline: true },
+              { name: "Prueba Gráfica", value: pruebaGrafica, inline: false },
+              { name: "Fecha y Hora", value: fecha, inline: true }
+            ]
+          };
+
+          return fetch(webhookURL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              content: `<@${idDetenido}>`, // ping fuera
+              username: "Ibercarp - Sistema de Arrestos",
+              embeds: [embed]
+            })
+          });
+        })
+        .then(() => {
+          alert('Arresto enviado y guardado correctamente.');
+          form.reset();
+        })
+        .catch(err => {
+          console.error(err);
+          alert('Error al enviar o guardar el arresto: ' + err.message);
+        });
+    });
+  </script>
+</body>
+</html>
