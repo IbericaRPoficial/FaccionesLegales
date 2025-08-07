@@ -59,11 +59,15 @@
     font-weight: bold;
     transition: background 0.2s;
   }
-  .sidebar button:hover {
+  .sidebar button:hover:not(:disabled) {
     background-color: #3f3f3f;
   }
+  .sidebar button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
   .faccion-menu {
-    width: 200px;
+    width: 220px;
     background: #1a1a1a;
     border-right: 1px solid #444;
     padding: 10px;
@@ -152,13 +156,13 @@
   </div>
   <div class="main">
     <div class="sidebar" id="sidebar">
-      <button onclick="accederFaccion('PMM')">PMM</button>
+      <button disabled>PMM</button>
       <button onclick="accederFaccion('CNP')">CNP</button>
-      <button onclick="accederFaccion('GC')">Guardia Civil</button>
-      <button onclick="accederFaccion('UCO')">UCO</button>
-      <button onclick="accederFaccion('CNI')">CNI</button>
-      <button onclick="accederFaccion('BOM')">Bomberos</button>
-      <button onclick="accederFaccion('SAMUR')">SAMUR</button>
+      <button disabled>Guardia Civil</button>
+      <button disabled>UCO</button>
+      <button disabled>CNI</button>
+      <button disabled>Bomberos</button>
+      <button disabled>SAMUR</button>
       <button onclick="cambiarUsuario()">Cambiar Usuario</button>
     </div>
     <div id="faccionMenuContainer" style="display:none; flex-direction: column; background:#1a1a1a; border-right: 1px solid #444; padding:10px; width: 220px;">
@@ -232,8 +236,8 @@
       'pmmAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     CNP: {
-      'cnp456': ['baseDatos', 'informes'],
-      'cnpAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'cnp456': ['baseDatos', 'informes', 'arrestos', 'denuncias'],
+      'cnpAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla', 'arrestos', 'denuncias']
     },
     GC: {
       'gc789': ['baseDatos', 'informes'],
@@ -262,7 +266,9 @@
     { id: 'oficializador', nombre: 'Oficializador' },
     { id: 'informes', nombre: 'Informes' },
     { id: 'oposicionesCuestionario', nombre: 'Oposiciones Cuestionario' },
-    { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' }
+    { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' },
+    { id: 'arrestos', nombre: 'Arrestos' },
+    { id: 'denuncias', nombre: 'Denuncias' }
   ];
 
   let usuarioActual = null;
@@ -380,6 +386,17 @@
 
     if (id === 'oposicionesTabla') {
       contenido.innerHTML = `<iframe src="https://docs.google.com/spreadsheets/d/1HMCXIP83YebaBsPXsIrsMZ2esocLLruzfRzUJ1YSp08/edit?usp=sharing" style="width:100%; height:100%; border:none;"></iframe>`;
+      return;
+    }
+
+    // Aquí las nuevas secciones para CNP
+    if (id === 'arrestos') {
+      contenido.innerHTML = `<iframe src="arresto.html" style="width:100%; height:100%; border:none;"></iframe>`;
+      return;
+    }
+
+    if (id === 'denuncias') {
+      contenido.innerHTML = `<iframe src="formulariodenuncias.html" style="width:100%; height:100%; border:none;"></iframe>`;
       return;
     }
 
