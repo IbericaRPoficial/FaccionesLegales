@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <title>PDA Policial IbericaRP</title>
 <style>
-  body {
+ body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: url('central.png') no-repeat center center fixed;
@@ -210,7 +210,6 @@
   import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
   import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
 
-  // Config Firebase
   const firebaseConfig = {
     apiKey: "AIzaSyCG1rHDV6sXnuNmuKujgT1jWoryELevCO8",
     authDomain: "ibericafaccionlegal.firebaseapp.com",
@@ -226,7 +225,6 @@
   const db = getDatabase(app);
   const storage = getStorage(app);
 
-  // Contraseñas con permisos (secciones permitidas) por facción
   const contraseñas = {
     PMM: {
       'pmm123': ['baseDatos', 'informes'],
@@ -271,7 +269,6 @@
   let seccionActual = null;
   let seccionesPermitidas = [];
 
-  // Usuario
   function guardarUsuario() {
     const nombre = document.getElementById('nombreUsuario').value.trim();
     if (nombre) {
@@ -286,13 +283,12 @@
     document.getElementById('usuarioModal').style.display = 'flex';
   }
 
-  // Contraseña y acceso facción
   function accederFaccion(faccion) {
     faccionActual = faccion;
     seccionActual = null;
     seccionesPermitidas = [];
     document.getElementById('inputPassword').value = '';
-    document.getElementById('labelPassword').textContent = Introduce la contraseña para ${faccion};
+    document.getElementById('labelPassword').textContent = `Introduce la contraseña para ${faccion}`;
     document.getElementById('passwordModal').style.display = 'flex';
   }
 
@@ -300,7 +296,7 @@
     const clave = document.getElementById('inputPassword').value;
     const fac = faccionActual;
     if (contraseñas[fac] && contraseñas[fac][clave]) {
-      seccionesPermitidas = contraseñas[fac][clave]; // guardamos secciones que puede ver el usuario
+      seccionesPermitidas = contraseñas[fac][clave];
       document.getElementById('passwordModal').style.display = 'none';
       mostrarMenuFaccion();
     } else {
@@ -308,13 +304,11 @@
     }
   }
 
-  // Mostrar menú lateral de secciones
   function mostrarMenuFaccion() {
     const menuContainer = document.getElementById('faccionMenuContainer');
     menuContainer.style.display = 'flex';
     menuContainer.innerHTML = '';
 
-    // Filtramos secciones que puede ver el usuario
     secciones
       .filter(sec => seccionesPermitidas.includes(sec.id))
       .forEach(sec => {
@@ -324,29 +318,28 @@
         menuContainer.appendChild(btn);
       });
 
-    document.getElementById('contenido').textContent = Accedido a facción ${faccionActual}. Selecciona una sección.;
+    document.getElementById('contenido').textContent = `Accedido a facción ${faccionActual}. Selecciona una sección.`;
   }
 
-  // Cargar sección seleccionada
   function cargarSeccion(id) {
     seccionActual = id;
     const contenido = document.getElementById('contenido');
 
     if (id === 'baseDatos') {
-      contenido.innerHTML = 
+      contenido.innerHTML = `
         <h2>Base de Datos de ${faccionActual}</h2>
         <button id="btnAgregarRegistro" style="margin-bottom: 15px; padding: 10px; background:#007bff; border:none; color:#fff; cursor:pointer;">
           Añadir registro
         </button>
         <div id="listaRegistros" style="max-height: 450px; overflow-y: auto; background:#222; padding:10px; border-radius:6px;"></div>
-      ;
+      `;
       document.getElementById('btnAgregarRegistro').onclick = abrirRegistroModal;
       cargarRegistros();
       return;
     }
 
     if (id === 'oficializador') {
-      const archivosOficializador = {
+      const archivos = {
         PMM: 'oficializadorpmm.html',
         CNP: 'oficializadorcnp.html',
         GC: 'officializadorgc.html',
@@ -355,17 +348,15 @@
         BOM: 'oficializadorbom.html',
         SAMUR: 'oficializadorsamur.html'
       };
-      let archivo = archivosOficializador[faccionActual];
-      if (!archivo) {
-        contenido.innerHTML = <p>Archivo oficializador no disponible para la facción ${faccionActual}.</p>;
-        return;
-      }
-      contenido.innerHTML = <iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>;
+      const archivo = archivos[faccionActual];
+      contenido.innerHTML = archivo
+        ? `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`
+        : `<p>Archivo oficializador no disponible para la facción ${faccionActual}.</p>`;
       return;
     }
 
     if (id === 'informes') {
-      const archivosInformes = {
+      const archivos = {
         PMM: 'informespmm.html',
         CNP: 'informescnp.html',
         GC: 'informesgc.html',
@@ -374,34 +365,29 @@
         BOM: 'informesbom.html',
         SAMUR: 'informessamur.html'
       };
-      let archivo = archivosInformes[faccionActual];
-      if (!archivo) {
-        contenido.innerHTML = <p>Archivo de informes no disponible para la facción ${faccionActual}.</p>;
-        return;
-      }
-      contenido.innerHTML = <iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>;
+      const archivo = archivos[faccionActual];
+      contenido.innerHTML = archivo
+        ? `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`
+        : `<p>Archivo de informes no disponible para la facción ${faccionActual}.</p>`;
       return;
     }
 
-    // Para otras secciones que no tengan iframe aún, solo texto básico:
-    contenido.innerHTML = <h2>${secciones.find(s => s.id === id)?.nombre || id}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>;
+    contenido.innerHTML = `<h2>${secciones.find(s => s.id === id)?.nombre || id}</h2><p>Contenido para la sección "${id}" de la facción ${faccionActual}.</p>`;
   }
 
-  // Abrir modal de agregar registro
   function abrirRegistroModal() {
     document.getElementById('registroNombre').value = '';
     document.getElementById('registroDescripcion').value = '';
     document.getElementById('registroPDF').value = '';
-    document.getElementById('tituloFaccion').textContent = Base de datos de ${faccionActual};
+    document.getElementById('tituloFaccion').textContent = `Base de datos de ${faccionActual}`;
     document.getElementById('registroModal').style.display = 'flex';
     cargarRegistrosModal();
   }
-  // Cerrar modal de registros
+
   function cerrarRegistroModal() {
     document.getElementById('registroModal').style.display = 'none';
   }
 
-  // Guardar registro nuevo en Firebase (con PDF opcional)
   async function guardarRegistro() {
     const nombre = document.getElementById('registroNombre').value.trim();
     const descripcion = document.getElementById('registroDescripcion').value.trim();
@@ -415,7 +401,7 @@
     let urlPdf = null;
     if (archivoPdf) {
       try {
-        const storageRef = sRef(storage, ${faccionActual}/pdfs/${Date.now()}_${archivoPdf.name});
+        const storageRef = sRef(storage, `${faccionActual}/pdfs/${Date.now()}_${archivoPdf.name}`);
         await uploadBytes(storageRef, archivoPdf);
         urlPdf = await getDownloadURL(storageRef);
       } catch (error) {
@@ -424,7 +410,7 @@
       }
     }
 
-    const registrosRef = ref(db, registros/${faccionActual});
+    const registrosRef = ref(db, `registros/${faccionActual}`);
     push(registrosRef, {
       nombre,
       descripcion,
@@ -433,7 +419,6 @@
       pdf: urlPdf || null
     });
 
-    // Limpieza
     document.getElementById('registroNombre').value = '';
     document.getElementById('registroDescripcion').value = '';
     document.getElementById('registroPDF').value = '';
@@ -443,12 +428,11 @@
     alert('Registro guardado correctamente.');
   }
 
-  // Cargar registros en baseDatos (contenido principal)
   function cargarRegistros() {
     const listaDiv = document.getElementById('listaRegistros');
     if (!listaDiv) return;
 
-    const registrosRef = ref(db, registros/${faccionActual});
+    const registrosRef = ref(db, `registros/${faccionActual}`);
     onValue(registrosRef, (snapshot) => {
       const datos = snapshot.val();
       if (!datos) {
@@ -459,9 +443,9 @@
       Object.values(datos).forEach(reg => {
         const div = document.createElement('div');
         div.className = 'registro';
-        let html = <strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>;
+        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
         if (reg.pdf) {
-          html += <br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>;
+          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
         }
         div.innerHTML = html;
         listaDiv.appendChild(div);
@@ -469,12 +453,11 @@
     });
   }
 
-  // Cargar registros en modal (listado)
   function cargarRegistrosModal() {
     const listaDiv = document.getElementById('listaRegistrosModal');
     if (!listaDiv) return;
 
-    const registrosRef = ref(db, registros/${faccionActual});
+    const registrosRef = ref(db, `registros/${faccionActual}`);
     onValue(registrosRef, (snapshot) => {
       const datos = snapshot.val();
       if (!datos) {
@@ -485,9 +468,9 @@
       Object.values(datos).forEach(reg => {
         const div = document.createElement('div');
         div.className = 'registro';
-        let html = <strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>;
+        let html = `<strong>${reg.nombre}</strong> (por: ${reg.usuario || usuarioActual})<br>${reg.descripcion}<br><small>${new Date(reg.fecha).toLocaleString()}</small>`;
         if (reg.pdf) {
-          html += <br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>;
+          html += `<br><a href="${reg.pdf}" target="_blank" rel="noopener noreferrer">Ver PDF</a>`;
         }
         div.innerHTML = html;
         listaDiv.appendChild(div);
@@ -495,7 +478,6 @@
     });
   }
 
-  // Al cargar página
   window.onload = () => {
     const guardado = localStorage.getItem('usuarioPDA');
     if (guardado) {
@@ -507,7 +489,6 @@
     }
   };
 
-  // Exponer funciones al global scope
   window.guardarUsuario = guardarUsuario;
   window.cambiarUsuario = cambiarUsuario;
   window.accederFaccion = accederFaccion;
