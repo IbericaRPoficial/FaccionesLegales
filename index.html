@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>PDA Policial IbericaRP</title>
 <style>
+ /* Tu CSS igual que antes */
  body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -228,7 +229,7 @@
   const contraseñas = {
     PMM: {
       'pmm123': ['baseDatos', 'informes'],
-      'pmmAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'pmmAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     CNP: {
       'cnp456': ['baseDatos', 'informes'],
@@ -236,23 +237,23 @@
     },
     GC: {
       'gc789': ['baseDatos', 'informes'],
-      'gcAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'gcAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     UCO: {
       'uco321': ['baseDatos', 'informes'],
-      'ucoAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'ucoAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     CNI: {
       'cni999': ['baseDatos', 'informes'],
-      'cniAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'cniAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     BOM: {
       'bom111': ['baseDatos', 'informes'],
-      'bomAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'bomAdmin': ['baseDatos', 'oficializador', 'informes']
     },
     SAMUR: {
       'samur555': ['baseDatos', 'informes'],
-      'samurAdmin': ['baseDatos', 'oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla']
+      'samurAdmin': ['baseDatos', 'oficializador', 'informes']
     }
   };
 
@@ -369,6 +370,16 @@
       contenido.innerHTML = archivo
         ? `<iframe src="${archivo}" style="width:100%; height:100%; border:none;"></iframe>`
         : `<p>Archivo de informes no disponible para la facción ${faccionActual}.</p>`;
+      return;
+    }
+
+    if (id === 'oposicionesCuestionario') {
+      contenido.innerHTML = `<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc1UFT39JB8VTSQ4GJ-LhfyEH7rgbMvBf4O8hQfyOsJ9Oydqg/viewform" style="width:100%; height:100%; border:none;"></iframe>`;
+      return;
+    }
+
+    if (id === 'oposicionesTabla') {
+      contenido.innerHTML = `<iframe src="https://docs.google.com/spreadsheets/d/1HMCXIP83YebaBsPXsIrsMZ2esocLLruzfRzUJ1YSp08/edit?usp=sharing" style="width:100%; height:100%; border:none;"></iframe>`;
       return;
     }
 
