@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tabla de Denuncias</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { background-color: #121212; color: white; font-family: Arial; padding: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #555; padding: 8px; text-align: left; }
+    th { background-color: #333; }
+    .btn { background: #f68b1f; border: none; padding: 6px 10px; color: white; cursor: pointer; border-radius: 4px; }
+    .razon-corto { max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; }
+    .btn:disabled { background: gray; cursor: not-allowed; }
+    #contenido { display: none; }
+  </style>
+</head>
+<body>
+
+<div id="login">
+  <h2>🔒 Acceso Restringido</h2>
+  <input type="password" id="password" placeholder="Introduce la contraseña">
+  <button class="btn" onclick="verificarClave()">Entrar</button>
+  <p id="error" style="color:red;"></p>
+</div>
+
+<div id="contenido">
+  <h2>📋 Lista de Denuncias Registradas</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nº</th>
+        <th>Denunciante</th>
+        <th>DNI Denunciante</th>
+        <th>Denunciado</th>
+        <th>DNI Denunciado</th>
+        <th>ID Discord</th>
+        <th>Razón</th>
+        <th>Imagen</th>
+        <th>Fecha</th>
+        <th>Placa Pol.</th>
+        <th>PDF</th>
+        <th>¿Juicio hecho?</th>
+      </tr>
+    </thead>
+    <tbody id="tabla"></tbody>
+  </table>
+</div>
+
+<script>
+  const CLAVE_ACCESO = "AlhWsXaE6"; // Cambia la contraseña aquí
+
+  function verificarClave() {
+    const pass = document.getElementById('password').value;
+    if (pass === CLAVE_ACCESO) {
+      document.getElementById('login').style.display = 'none';
+      document.getElementById('contenido').style.display = 'block';
+      cargarFirebase();
+    } else {
+      document.getElementById('error').textContent = "Contraseña incorrecta";
+    }
+  }
+
+  function cargarFirebase() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuBRD8chGasqZ9EBN8BZqZymRQlnMg-RQ",
+      authDomain: "ibericadenunciasyincauta.firebaseapp.com",
+      databaseURL: "https://ibericadenunciasyincauta-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "ibericadenunciasyincauta",
+      storageBucket: "ibericadenunciasyincauta.firebasestorage.app",
+      messagingSenderId: "391793508120",
+      appId: "1:391793508120:web:afd8633f7f78fe2eeb686d",
+      measurementId: "G-TT88LPHZPR"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const tabla = document.getElementById('tabla');
+
+    db.ref('denuncias').on('value', snapshot => {
+      tabla.innerHTML = '';
+      snapshot.forEach(child => {
+        const d = child.val();
+        const key = child.key;
+        const tr = document.createElement('tr');
+        const aprobado = d.aprobada === true;
+
+        tr.innerHTML = `
+          <td>${d.numeroDenuncia}</td>
+          <td>${d.nombreDenunciante}</td>
+          <td>${d.dniDenunciante}</td>
+          <td>${d.nombreDenunciado}</td>
+          <td>${d.dniDenunciado}</td>
+          <td>${d.idDiscord}</td>
+          <td>
+            <span class="razon-corto" title="${d.razonDenuncia}">${d.razonDenuncia}</span>
+            <button class="btn" onclick="verMas(this)">Ver más</button>
+          </td>
+          <td>${d.urlEvidencia ? `<img src="${d.urlEvidencia}" alt="Evidencia" width="100" />` : 'No'}</td>
+          <td>${d.fecha}</td>
+          <td>${d.placaPolicia}</td>
+          <td><button class="btn" onclick='descargarPDF(${JSON.stringify(d)})'>PDF</button></td>
+          <td><button class="btn" ${aprobado ? 'disabled style="background: gray;"' : ''} onclick='aprobarDenunciaFirebase("${key}", this)'>✅</button></td>
+        `;
+        tabla.appendChild(tr);
+      });
+    });
+  }
+
+  function verMas(btn) {
+    const span = btn.previousElementSibling;
+    if (span.style.whiteSpace === 'normal') {
+      span.style.whiteSpace = 'nowrap';
+      span.style.overflow = 'hidden';
+      span.style.textOverflow = 'ellipsis';
+      btn.textContent = 'Ver más';
+    } else {
+      span.style.whiteSpace = 'normal';
+      span.style.overflow = 'visible';
+      span.style.textOverflow = 'unset';
+      btn.textContent = 'Ver menos';
+    }
+  }
+
+  function descargarPDF(data) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+
+    doc.setFontSize(16);
+    doc.text("Informe de Denuncia", 10, y);
+    y += 10;
+    doc.setFontSize(12);
+
+    const campos = [
+      ['Nº Denuncia', data.numeroDenuncia],
+      ['Nombre Denunciante', data.nombreDenunciante],
+      ['DNI Denunciante', data.dniDenunciante],
+      ['Nombre Denunciado', data.nombreDenunciado],
+      ['DNI Denunciado', data.dniDenunciado],
+      ['ID Discord', data.idDiscord],
+      ['Placa Policial', data.placaPolicia],
+      ['Fecha', data.fecha]
+    ];
+
+    campos.forEach(([label, value]) => {
+      doc.text(`${label}: ${value || '-'}`, 10, y);
+      y += 8;
+    });
+
+    doc.text("Razón:", 10, y);
+    y += 8;
+    const split = doc.splitTextToSize(data.razonDenuncia || '', 180);
+    doc.text(split, 10, y);
+
+    doc.save(`Denuncia_${data.numeroDenuncia || 'sin_numero'}.pdf`);
+  }
+
+  function aprobarDenunciaFirebase(clave, boton) {
+    firebase.database().ref('denuncias/' + clave).update({
+      aprobada: true
+    }).then(() => {
+      boton.disabled = true;
+      boton.style.background = 'gray';
+    });
+  }
+</script>
+
+</body>
+</html>
