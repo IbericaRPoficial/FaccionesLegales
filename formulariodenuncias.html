@@ -60,16 +60,16 @@
   <h1>🛑 Formulario de Denuncias - Ibercarp</h1>
 
   <form id="denunciaForm">
-    <label for="nombreDenunciante">Nombre del Denunciante:</label>
+    <label for="nombreDenunciante">Nombre del Denunciante IC:</label>
     <input type="text" id="nombreDenunciante" required />
 
     <label for="dniDenunciante">User de Discord:</label>
     <input type="text" id="dniDenunciante" required />
 
-    <label for="nombreDenunciado">Nombre del Denunciado:</label>
+    <label for="nombreDenunciado">Nombre del Denunciado IC:</label>
     <input type="text" id="nombreDenunciado" required />
 
-    <label for="dniDenunciado">DNI del Denunciado:</label>
+    <label for="dniDenunciado">DNI del Denunciado IC:</label>
     <input type="text" id="dniDenunciado" required />
 
     <label for="idDiscord">ID Discord del Denunciado (para ping):</label>
@@ -78,11 +78,11 @@
     <label for="razonDenuncia">Razón (extendido):</label>
     <textarea id="razonDenuncia" rows="5" required></textarea>
 
-    <label for="urlEvidencia">URL Imagen de pruebas (opcional):</label>
-    <input type="url" id="urlEvidencia" placeholder="https://..." />
+    <label for="urlEvidencia">URL de pruebas (Video/Audio/Foto):</label>
+    <input type="url" id="urlEvidencia" placeholder="https://..." required />
 
-    <label for="placaPolicia">Placa del Policía:</label>
-    <input type="text" id="placaPolicia" required />
+    <label for="placaPolicia">Placa del Policía que Redacta la Denuncia:</label>
+    <input type="text" id="placaPolicia" placeholder="Z-003/GC-200" required />
 
     <button type="submit">Enviar denuncia</button>
   </form>
@@ -207,6 +207,7 @@
 
 </body>
 </html>
+
 
 
 
