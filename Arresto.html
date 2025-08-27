@@ -114,16 +114,17 @@
       e.preventDefault();
 
       const passwordInput = prompt("Introduce la contraseña para enviar el arresto:");
-      const correctPassword = [
-        "tiJ6dwBb9D",
-        "Gc#74vP@zL9q",
-        "EdcoMETR",
-        "dStoRnerOC"
-      ];
-      if (passwordInput !== correctPassword) {
-        alert('Contraseña incorrecta. No se ha enviado el arresto.');
-        return;
-      }
+  const correctPasswords = [
+    "tiJ6dwBb9D",
+    "Gc#74vP@zL9q",
+    "EdcoMETR",
+    "dStoRnerOC"
+  ];
+
+  if (!correctPasswords.includes(passwordInput)) {
+  alert('Contraseña incorrecta. No se ha enviado el arresto.');
+  return;
+}
 
       const idDetenido = document.getElementById('idDetenido').value.trim();
       const idAgente1 = document.getElementById('idAgente1').value.trim();
@@ -190,4 +191,5 @@
   </script>
 </body>
 </html>
+
 
