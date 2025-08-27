@@ -128,17 +128,18 @@
       e.preventDefault();
 
       const passwordInput = prompt("Introduce la contraseña para enviar la denuncia:");
-      const correctPassword = [
-        "tiJ6dwBb9D",
-        "Gc#74vP@zL9q",
-        "EdcoMETR",
-        "dStoRnerOC"
+      const correctPasswords = [
+          "tiJ6dwBb9D",
+          "Gc#74vP@zL9q",
+          "EdcoMETR",
+          "dStoRnerOC"
       ];
 
-      if (passwordInput !== correctPassword) {
-        alert('Contraseña incorrecta. No se ha enviado la denuncia.');
-        return;
-      }
+    if (!correctPasswords.includes(passwordInput)) {
+        alert('Contraseña incorrecta. No se ha enviado el arresto.');
+    return;
+  }
+
 
       const nombreDenunciante = document.getElementById('nombreDenunciante').value.trim();
       const dniDenunciante = document.getElementById('dniDenunciante').value.trim();
@@ -212,6 +213,7 @@
 
 </body>
 </html>
+
 
 
 
