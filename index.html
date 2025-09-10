@@ -236,11 +236,11 @@
     },
     CNP: {
       'EdcoMETR': ['arrestos', 'denuncias'],
-      'dStoRnerOC': ['baseDatos','oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla', 'arrestos', 'denuncias']
+      'dStoRnerOC': ['baseDatos','oficializador', 'informes', 'oposicionesCuestionario', 'oposicionesTabla', 'arrestos', 'denuncias','placa']
     },
     GC: {
       'tiJ6dwBb9D': ['arrestos', 'denuncias'],
-      'Gc#74vP@zL9q': ['baseDatos', 'oficializador', 'informes', 'arrestos','denuncias']
+      'Gc#74vP@zL9q': ['baseDatos', 'oficializador', 'informes', 'arrestos','denuncias', 'placa']
     },
     UCO: {
       'uco321': ['baseDatos', 'informes'],
@@ -267,7 +267,8 @@
     { id: 'oposicionesCuestionario', nombre: 'Oposiciones Cuestionario' },
     { id: 'oposicionesTabla', nombre: 'Oposiciones Tabla' },
     { id: 'arrestos', nombre: 'Arrestos' },
-    { id: 'denuncias', nombre: 'Denuncias' }
+    { id: 'denuncias', nombre: 'Denuncias' },
+    { id: 'placa', nombre: 'Placa Jefatura' }
   ];
 
   let usuarioActual = null;
@@ -389,6 +390,11 @@
     }
 
     // Aquí las nuevas secciones para CNP
+     if (id === 'placa') {
+     contenido.innerHTML = `<iframe src="placa.html" style="width:100%; height:100%; border:none;"></iframe>`;
+     return;
+    }
+
     if (id === 'arrestos') {
       contenido.innerHTML = `<iframe src="Arresto.html" style="width:100%; height:100%; border:none;"></iframe>`;
       return;
