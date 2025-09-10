@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Credencial Policía IbericaRP</title>
+<style>
+body { background:#0d1117; color:#fff; font-family:sans-serif; padding:20px; }
+.panel { background:#161b22; padding:16px; border-radius:10px; max-width:500px; margin:auto; }
+label { display:block; margin-top:10px; }
+input { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #30363d; background:#0d1117; color:#fff; }
+button { margin-top:12px; padding:10px 14px; border:0; border-radius:8px; background:#facc15; cursor:pointer; font-weight:bold; color:#000; margin-right:5px; }
+canvas { display:block; margin:20px auto; background:#111; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,0.6); }
+</style>
+</head>
+<body>
+<div class="panel">
+<h2>Credencial Policía IbericaRP</h2>
+
+<label>Nombre<input id="name" type="text" placeholder="Ej: Juan Pérez"></label>
+<label>Rango<input id="rank" type="text" placeholder="Ej: Inspector"></label>
+<label>Subdivisión policial<input id="subdivision" type="text" placeholder="Ej: Investigación Criminal"></label>
+<label>Número de placa<input id="number" type="text" placeholder="Ej: 1234"></label>
+<label>Departamento<input id="dept" type="text" placeholder="Ej: Policía IbericaRP"></label>
+<label>Foto del personaje<input id="photo" type="file" accept="image/*"></label>
+<label>Logo de la organización<input id="logo" type="file" accept="image/*"></label>
+<label>Fondo personalizado<input id="background" type="file" accept="image/*"></label>
+
+<button id="generate">Generar Credencial</button>
+<button id="send">Enviar a Discord</button>
+
+<canvas id="badge" width="420" height="720"></canvas>
+</div>
+
+<script>
+const canvas = document.getElementById("badge");
+const ctx = canvas.getContext("2d");
+const nameInput = document.getElementById("name");
+const rankInput = document.getElementById("rank");
+const subdivisionInput = document.getElementById("subdivision");
+const numInput = document.getElementById("number");
+const deptInput = document.getElementById("dept");
+const photoInput = document.getElementById("photo");
+const logoInput = document.getElementById("logo");
+const backgroundInput = document.getElementById("background");
+
+let photoImg = null, logoImg = null, backgroundImg = null;
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1415331530720677928/EKhUNlX8bIPvaU8LjOm-aZ0Hst3GZfZIvKFQ6pVlbFfjNquGxns7McAldH3AmSiX4rZ0";
+
+function loadImage(file, callback){
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=> callback(img);
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+photoInput.addEventListener("change", e=>{if(e.target.files[0]) loadImage(e.target.files[0], img=>{photoImg=img; drawBadge();});});
+logoInput.addEventListener("change", e=>{if(e.target.files[0]) loadImage(e.target.files[0], img=>{logoImg=img; drawBadge();});});
+backgroundInput.addEventListener("change", e=>{if(e.target.files[0]) loadImage(e.target.files[0], img=>{backgroundImg=img; drawBadge();});});
+
+function drawMetallicText(text,x,y,fontSize=28,center=false){
+  const gradient=ctx.createLinearGradient(x,y-fontSize,x,y);
+  gradient.addColorStop(0,"#fffacd");
+  gradient.addColorStop(0.5,"#d4af37");
+  gradient.addColorStop(1,"#a67c00");
+  ctx.fillStyle=gradient;
+  ctx.font=`bold ${fontSize}px Arial`;
+  ctx.textAlign=center?"center":"left";
+  ctx.fillText(text,x,y);
+}
+
+function drawBadge(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Fondo
+  if(backgroundImg) ctx.drawImage(backgroundImg,0,0,canvas.width,canvas.height);
+  else { ctx.fillStyle="#1a1a1a"; ctx.fillRect(0,0,canvas.width,canvas.height); }
+
+  // Cabecera blanca con texto amarillo
+  ctx.fillStyle="#ffffff";
+  ctx.fillRect(0,40,canvas.width,60);
+  ctx.fillStyle="#facc15";
+  ctx.font="bold 22px Arial";
+  ctx.textAlign="center";
+  ctx.fillText(deptInput.value || "POLICÍA IBERICARP", canvas.width/2,75);
+
+  // Foto centrada arriba
+  if(photoImg){ ctx.drawImage(photoImg,(canvas.width-140)/2,130,140,180); }
+  else { ctx.strokeStyle="#ccc"; ctx.strokeRect((canvas.width-140)/2,130,140,180); ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.fillText("Foto",canvas.width/2,220); }
+
+  // Datos debajo de la foto
+  ctx.fillStyle="#fff"; ctx.font="18px Arial"; ctx.textAlign="left";
+  const startY = 330;
+  ctx.fillText("Nombre: " + (nameInput.value || "NOMBRE RP"), 40, startY);
+  ctx.fillText("Rango: " + (rankInput.value || "RANGO RP"), 40, startY+30);
+  ctx.fillText("Subdivisión: " + (subdivisionInput.value || "SUBDIVISIÓN RP"), 40, startY+60);
+  ctx.fillText("Placa Nº: " + (numInput.value || "0000"), 40, startY+90);
+
+  // Logo abajo
+  if(logoImg){ ctx.drawImage(logoImg,(canvas.width-150)/2,480,150,150); }
+
+  // Nº placa destacado
+  drawMetallicText("Nº " + (numInput.value || "0000"),canvas.width/2,canvas.height-20,34,true);
+}
+
+document.getElementById("generate").addEventListener("click",drawBadge);
+
+document.getElementById("send").addEventListener("click", async () => {
+  canvas.toBlob(async function(blob){
+    const form = new FormData();
+    form.append("file", blob, "credencial.png");
+
+    const embed = {
+      title: "🪪 Nueva credencial generada",
+      color: 000080,
+      fields: [
+        { name: "Nombre", value: nameInput.value || "NOMBRE RP", inline: true },
+        { name: "Rango", value: rankInput.value || "RANGO RP", inline: true },
+        { name: "Subdivisión", value: subdivisionInput.value || "SUBDIVISIÓN RP", inline: true },
+        { name: "Placa Nº", value: numInput.value || "0000", inline: true },
+        { name: "Departamento", value: deptInput.value || "POLICÍA IBERICARP", inline: true }
+      ],
+      image: { url: "attachment://credencial.png" },
+      footer: { text: "Credencial IbericaRP" }
+    };
+
+    form.append("payload_json", JSON.stringify({ embeds: [embed] }));
+
+    await fetch(DISCORD_WEBHOOK, { method: "POST", body: form });
+    alert("Credencial enviada a Discord ✅");
+  });
+});
+
+drawBadge();
+</script>
+</body>
+</html>
