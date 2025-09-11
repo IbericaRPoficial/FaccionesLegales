@@ -21,6 +21,7 @@ canvas { display:block; margin:20px auto; background:#111; border-radius:12px; b
 <label>Subdivisión policial<input id="subdivision" type="text" placeholder="Ej: Investigación Criminal"></label>
 <label>Número de placa<input id="number" type="text" placeholder="Ej: 1234"></label>
 <label>Departamento<input id="dept" type="text" placeholder="Ej: Policía IbericaRP"></label>
+<label>ID de usuario Discord<input id="discordId" type="text" placeholder="Ej: 123456789012345678"></label>
 <label>Foto del personaje<input id="photo" type="file" accept="image/*"></label>
 <label>Logo de la organización<input id="logo" type="file" accept="image/*"></label>
 <label>Fondo personalizado<input id="background" type="file" accept="image/*"></label>
@@ -39,12 +40,13 @@ const rankInput = document.getElementById("rank");
 const subdivisionInput = document.getElementById("subdivision");
 const numInput = document.getElementById("number");
 const deptInput = document.getElementById("dept");
+const discordIdInput = document.getElementById("discordId");
 const photoInput = document.getElementById("photo");
 const logoInput = document.getElementById("logo");
 const backgroundInput = document.getElementById("background");
 
 let photoImg = null, logoImg = null, backgroundImg = null;
-const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1415331530720677928/EKhUNlX8bIPvaU8LjOm-aZ0Hst3GZfZIvKFQ6pVlbFfjNquGxns7McAldH3AmSiX4rZ0";
+const DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1415631476392988693/bboC75CqukpXhBvvTjDftwSjtmALcxCH601E3foRKEE4LFn8ntDahOMq9Pwa2cMyZS_6";
 
 function loadImage(file, callback){
   const reader = new FileReader();
@@ -78,7 +80,7 @@ function drawBadge(){
   if(backgroundImg) ctx.drawImage(backgroundImg,0,0,canvas.width,canvas.height);
   else { ctx.fillStyle="#1a1a1a"; ctx.fillRect(0,0,canvas.width,canvas.height); }
 
-  // Cabecera blanca con texto amarillo
+  // Cabecera
   ctx.fillStyle="#ffffff";
   ctx.fillRect(0,40,canvas.width,60);
   ctx.fillStyle="#facc15";
@@ -86,11 +88,11 @@ function drawBadge(){
   ctx.textAlign="center";
   ctx.fillText(deptInput.value || "POLICÍA IBERICARP", canvas.width/2,75);
 
-  // Foto centrada arriba
+  // Foto
   if(photoImg){ ctx.drawImage(photoImg,(canvas.width-140)/2,130,140,180); }
   else { ctx.strokeStyle="#ccc"; ctx.strokeRect((canvas.width-140)/2,130,140,180); ctx.fillStyle="#fff"; ctx.textAlign="center"; ctx.fillText("Foto",canvas.width/2,220); }
 
-  // Datos debajo de la foto
+  // Datos
   ctx.fillStyle="#fff"; ctx.font="18px Arial"; ctx.textAlign="left";
   const startY = 330;
   ctx.fillText("Nombre: " + (nameInput.value || "NOMBRE RP"), 40, startY);
@@ -98,7 +100,7 @@ function drawBadge(){
   ctx.fillText("Subdivisión: " + (subdivisionInput.value || "SUBDIVISIÓN RP"), 40, startY+60);
   ctx.fillText("Placa Nº: " + (numInput.value || "0000"), 40, startY+90);
 
-  // Logo abajo
+  // Logo
   if(logoImg){ ctx.drawImage(logoImg,(canvas.width-150)/2,480,150,150); }
 
   // Nº placa destacado
@@ -126,7 +128,14 @@ document.getElementById("send").addEventListener("click", async () => {
       footer: { text: "Credencial IbericaRP" }
     };
 
-    form.append("payload_json", JSON.stringify({ embeds: [embed] }));
+    // Si se introduce un ID de usuario válido, hacemos ping
+    const userId = discordIdInput.value.trim();
+    const payload = { 
+      embeds: [embed],
+      content: userId ? `<@${userId}>` : "" 
+    };
+
+    form.append("payload_json", JSON.stringify(payload));
 
     await fetch(DISCORD_WEBHOOK, { method: "POST", body: form });
     alert("Credencial enviada a Discord ✅");
